@@ -1,0 +1,67 @@
+<header class="header">
+
+  <div class="logo">
+    <a routerLink="/">
+      <img src="/logo.svg" alt="TerretaHouse">
+    </a>
+  </div>
+
+  <div class="menu-toggle">
+    ☰
+  </div>
+
+  <nav class="nav">
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/guias">Guías de Turismo</a>
+    <a routerLink="/ofertas">Ofertas</a>
+    <a routerLink="/contacto">Contacto</a>
+  </nav>
+
+  <!-- Comprobamos si no esta logueado -->
+  @if (comprobarLogueado() === false) {
+    <div class="autentificacion">
+      <a routerLink="/login">Iniciar Sesión</a>
+      <a routerLink="/register">Registrarme</a>
+    </div>
+  }
+
+  <!-- Comprobamos si esta logueado -->
+  @if (comprobarLogueado() === true) {
+    <div class="autentificacion">
+      
+      <div class="dropdown">
+        
+        <button class="dropdown-btn" (click)="conmutarMenu()">
+          {{ obtenerEmail() }}
+        </button>
+
+        @if (menuAbierto === true) {
+          <div class="dropdown-content">
+            
+            @if (comprobarAdmin() === true) {
+              <div class="admin-tag">ADMINISTRADOR</div>
+              <a routerLink="/crear-reservas" (click)="cerrarMenu()">Crear Actividades</a>
+              <hr>
+            }
+
+            @if (comprobarAdmin() === true) {
+              <a routerLink="/mis-reservas" (click)="cerrarMenu()">Ver Actividades</a>
+            }
+            
+            @if (comprobarAdmin() === false) {
+              <a routerLink="/mis-reservas" (click)="cerrarMenu()">Mis reservas</a>
+            }
+            
+            <a (click)="logout()" class="btn-salir">
+              Salir
+            </a>
+
+          </div>
+        }
+
+      </div>
+
+    </div>
+  }
+
+</header>

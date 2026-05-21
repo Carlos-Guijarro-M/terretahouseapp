@@ -1,0 +1,135 @@
+/* Contenedor principal de la cabecera */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #A0685D;
+}
+
+.logo img {
+  height: 80px;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 26px;
+  color: #F6F1EC;
+}
+
+.nav {
+  display: flex;
+  gap: 25px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #F6F1EC;
+  font-size: 24px;
+}
+
+.autentificacion {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.autentificacion a {
+  text-decoration: none;
+  color: #F6F1EC;
+  border: 1px solid #F6F1EC;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 20px;
+}
+
+.autentificacion a:hover {
+  background-color: #F6F1EC;
+  color: #A0685D;
+}
+
+/* Caja del menu desplegable */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-btn {
+  background-color: #A0685D;
+  color: #F6F1EC;
+  border: 1px solid #F6F1EC;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.dropdown-btn:hover {
+  background-color: #F6F1EC;
+  color: #A0685D;
+}
+
+.dropdown-content {
+  position: absolute;
+  right: 0;
+  background-color: #F6F1EC;
+  width: 220px;
+  border: 1px solid #CCCCCC;
+  border-radius: 6px;
+  margin-top: 5px;
+  z-index: 1000;
+}
+
+.admin-tag {
+  font-size: 12px;
+  font-weight: bold;
+  color: #A0685D;
+  padding: 10px;
+}
+
+.dropdown-content a {
+  color: #A0685D;
+  padding: 12px;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover {
+  background-color: #FFFFFF;
+}
+
+.dropdown-content .btn-salir {
+  color: #FF0000;
+}
+
+.dropdown-content hr {
+  border: 0;
+  border-top: 1px solid #CCCCCC;
+  margin: 5px;
+}
+
+/* Responsive basico */
+@media (max-width: 1024px) {
+  .nav a {
+    font-size: 14px;
+  }
+  .autentificacion a {
+    font-size: 14px;
+  }
+  .dropdown-btn {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+  .autentificacion {
+    display: none;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}

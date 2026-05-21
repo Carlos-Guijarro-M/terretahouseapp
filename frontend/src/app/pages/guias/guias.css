@@ -1,0 +1,69 @@
+.guias-contenedor {
+  font-family: Arial, sans-serif;
+  background-color: #F6F1EC;
+  min-height: 100vh;
+}
+
+.hero-simple {
+  height: 35vh;
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-simple h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.contenido-vacio {
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.mensaje-aviso {
+  background: #FFFFFF;
+  padding: 40px;
+  border-radius: 6px;
+  border: 1px solid #E0E0E0;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.mensaje-aviso h3 {
+  color: #A0685D;
+  font-size: 22px;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.mensaje-aviso p {
+  color: #666666;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.btn-volver {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #A0685D;
+  color: #FFFFFF;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.btn-volver:hover {
+  background-color: #855348;
+}

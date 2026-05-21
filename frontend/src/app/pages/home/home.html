@@ -1,0 +1,45 @@
+<div class="home-sitio">
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Descubre la Comunidad Valenciana</h1>
+      <p>Las mejores rutas y experiencias turísticas de la Terreta</p>
+    </div>
+  </section>
+
+  <section class="seccion-experiencias">
+    <h2>Próximas Experiencias Disponibles</h2>
+    <p class="subtitulo">Reserva tu plaza antes de que se agoten</p>
+
+    @if (!actividades || actividades.length === 0) {
+      <p class="sin-actividades">No hay actividades programadas en este momento. ¡Vuelve pronto!</p>
+    } @else {
+      <div class="grid-actividades">
+        @for (act of actividades; track act.id) {
+          
+          @if (!yaReservada(act.titulo)) {
+            <div class="tarjeta-actividad">
+              <span class="etiqueta-estado" [ngClass]="act.estado">{{ act.estado | uppercase }}</span>
+              <h3>{{ act.titulo }}</h3>
+              <p class="fecha-actividad">Fecha: <strong>{{ act.fecha }}</strong></p>
+
+              <div class="zona-interaccion">
+                @if (!userLogeado) {
+                  <a routerLink="/login" class="btn-accion btn-bloqueado">Inicia sesión para reservar</a>
+                } @else if (userLogeado && !isAdmin) {
+                  <button type="button" (click)="reservarActividad(act.id)" class="btn-accion btn-reserva" [disabled]="act.estado === 'completo'">
+                    Reservar Plaza
+                  </button>
+                } @else if (userLogeado && isAdmin) {
+                  <p class="aviso-admin">Vista de administrador (Gestionable desde tu panel)</p>
+                }
+              </div>
+            </div>
+          }
+
+        }
+      </div>
+    }
+  </section>
+
+</div>

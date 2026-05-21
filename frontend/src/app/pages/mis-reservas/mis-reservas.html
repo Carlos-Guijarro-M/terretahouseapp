@@ -1,0 +1,47 @@
+<div class="reservas">
+
+  <section class="hero">
+    <h1>{{ tituloPagina }}</h1>
+  </section>
+
+  <section class="seccion-listado">
+    <h2>Listado actual</h2>
+
+    @if (reservas.length === 0) {
+      <div class="no-reservas">
+        @if (isAdmin === true) {
+          No hay actividades creadas todavía. Abre el panel para añadir la primera.
+        } @else {
+          No tienes reservas todavía. Pásate por el inicio para buscar actividades.
+        }
+      </div>
+    } @else {
+      
+      <div class="grid-reservas">
+        @for (r of reservas; track r.id) {
+          <div class="tarjeta-reserva">
+            <h3>{{ r.titulo }}</h3>
+            <p class="fecha"><strong>Fecha:</strong> {{ r.fecha }}</p>
+            <p class="estado">
+              <strong>Estado:</strong> 
+              <span class="badge">{{ r.estado || 'pendiente' }}</span>
+            </p>
+
+            @if (isAdmin === false) {
+              <button type="button" (click)="cancelarReserva(r.id)" class="btn-cancelar">Cancelar Reserva</button>
+            }
+
+            @if (isAdmin === true) {
+              <div class="acciones-admin">
+                <button type="button" (click)="eliminarActividad(r.id)" class="btn-borrar-admin">Eliminar Actividad</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+    }
+
+  </section>
+
+</div>
