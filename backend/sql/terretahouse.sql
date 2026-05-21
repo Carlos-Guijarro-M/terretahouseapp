@@ -1,0 +1,28 @@
+CREATE DATABASE IF NOT EXISTS terretahousebbdd;
+USE terretahousebbdd;
+
+CREATE TABLE IF NOT EXISTS user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(180) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    roles JSON NOT NULL,
+    api_token VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS actividad (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    fecha DATETIME NOT NULL,
+    estado VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS reserva (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    fecha DATETIME NOT NULL,
+    estado VARCHAR(50) NOT NULL,
+    user_id INT NOT NULL,
+    actividad_id INT NOT NULL,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
+    CONSTRAINT fk_actividad FOREIGN KEY (actividad_id) REFERENCES actividad(id) ON DELETE CASCADE
+);
