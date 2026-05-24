@@ -1,62 +1,74 @@
 <?php
-
-require_once 'auth_check.php'; 
-header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://localhost:4200");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Authorization, Content-Type");
+header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
+
+require_once '../includes/db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// --- GET: Listar actividades (Todos los logueados pueden ver) ---
+// Obtener actividades
 if ($method === 'GET') {
-    $result = $conn->query("SELECT * FROM actividad");
+    $result = $conn->query("SELECT id, titulo, DATE(fecha) as fecha, estado FROM actividad");
     echo json_encode($result->fetch_all(MYSQLI_ASSOC));
-} 
-
-// --- POST: Crear actividad (SOLO ADMIN) ---
-elseif ($method === 'POST') {
-    if (!in_array('ROLE_ADMIN', $userRoles)) {
-        http_response_code(403);
-        exit(json_encode(['message' => 'Acceso denegado']));
-    }
-
-    $data = json_decode(file_get_contents('php://input'), true);
-    $stmt = $conn->prepare("INSERT INTO actividad (nombre, descripcion, precio) VALUES (?, ?, ?)");
-    $stmt->bind_param("ssd", $data['nombre'], $data['descripcion'], $data['precio']);
-    $stmt->execute();
-    echo json_encode(['message' => 'Actividad creada']);
+    exit;
 }
 
-// --- PUT: Modificar actividad (SOLO ADMIN) ---
-elseif ($method === 'PUT') {
-    if (!in_array('ROLE_ADMIN', $userRoles)) {
-        http_response_code(403);
-        exit(json_encode(['message' => 'Acceso denegado']));
-    }
+require_once 'auth_check.php';
 
-    $id = $_GET['id'] ?? 0;
-    $data = json_decode(file_get_contents('php://input'), true);
-    
-    $stmt = $conn->prepare("UPDATE actividad SET nombre = ?, descripcion = ?, precio = ? WHERE id = ?");
-    $stmt->bind_param("ssdi", $data['nombre'], $data['descripcion'], $data['precio'], $id);
-    $stmt->execute();
-    
-    echo ($stmt->affected_rows > 0) ? json_encode(['message' => 'Actividad actualizada']) : http_response_code(404);
+if (!in_array('ROLE_ADMIN', $userRoles)) {
+    http_response_code(403);
+    echo json_encode(['message' => 'Acceso denegado']);
+    exit;
 }
 
-// --- DELETE: Borrar actividad (SOLO ADMIN) ---
-elseif ($method === 'DELETE') {
-    if (!in_array('ROLE_ADMIN', $userRoles)) {
-        http_response_code(403);
-        exit(json_encode(['message' => 'Acceso denegado']));
+// añadir actividad
+if ($method === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    //guardar la fecha
+    $stmt = $conn->prepare("INSERT INTO actividad (titulo, fecha, estado) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $data['titulo'], $data['fecha'], $data['estado']);
+    
+    if ($stmt->execute()) {
+        echo json_encode(['message' => 'Actividad creada correctamente']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al guardar en la base de datos']);
     }
+}
 
-    $id = $_GET['id'] ?? 0;
+// actualizar
+if ($method === 'PUT') {
+    $id = $_GET['id'];
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    $stmt = $conn->prepare("UPDATE actividad SET titulo = ?, fecha = ?, estado = ? WHERE id = ?");
+    $stmt->bind_param("sssi", $data['titulo'], $data['fecha'], $data['estado'], $id);
+    
+    if ($stmt->execute()) {
+        echo json_encode(['message' => 'Actividad actualizada']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al actualizar']);
+    }
+}
+
+// borrar
+if ($method === 'DELETE') {
+    $id = $_GET['id'];
     $stmt = $conn->prepare("DELETE FROM actividad WHERE id = ?");
     $stmt->bind_param("i", $id);
-    $stmt->execute();
     
-    echo ($stmt->affected_rows > 0) ? json_encode(['message' => 'Actividad eliminada']) : http_response_code(404);
+    if ($stmt->execute()) {
+        echo json_encode(['message' => 'Actividad eliminada']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al borrar']);
+    }
 }
 ?>

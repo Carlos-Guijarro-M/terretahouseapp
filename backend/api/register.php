@@ -1,5 +1,4 @@
 <?php
-// Configuración de cabeceras para permitir peticiones desde Angular
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -13,7 +12,7 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 if (!isset($data['email']) || !isset($data['password'])) {
     http_response_code(400);
-    echo json_encode(['message' => 'Datos incompletos']);
+    echo json_encode(['message' => 'Faltan datos obligatorios']);
     exit;
 }
 
@@ -27,10 +26,12 @@ if ($email === 'admin@gmail.com') {
 }
 
 $stmt = $conn->prepare("INSERT INTO user (email, password, roles) VALUES (?, ?, ?)");
+$stmt->bind_param("sss", $email, $password, $rol_final);
 
-if ($stmt && $stmt->bind_param("sss", $email, $password, $rol_final) && $stmt->execute()) {
-    echo json_encode(['message' => 'Usuario registrado correctamente']);
+if ($stmt->execute()) {
+    echo json_encode(['message' => 'Usuario registrado con éxito']);
 } else {
     http_response_code(400);
-    echo json_encode(['message' => 'Error al registrar: ' . ($stmt ? $stmt->error : 'Error en la conexión')]);
+    echo json_encode(['message' => 'Error al guardar el usuario']);
 }
+?>
