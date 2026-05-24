@@ -1,14 +1,26 @@
 <div class="ofertas-contenedor">
-  <section class="hero-simple">
-    <h1>Ofertas Especiales</h1>
-    <p>Encuentra las mejores actividades al mejor precio</p>
-  </section>
+  <header class="hero-simple text-white d-flex flex-column align-items-center justify-content-center text-center"
+          style="height: 35vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg') center/cover;">
+    <h1 class="display-4 fw-bold">Ofertas Especiales</h1>
+    <p class="lead">Encuentra las mejores actividades al mejor precio</p>
+  </header>
 
-  <section class="contenido-vacio">
-    <div class="mensaje-aviso">
-      <h3>No hay ofertas disponibles</h3>
-      <p>Actualmente no disponemos de ninguna promoción activa. Estamos diseñando nuevos packs de temporada para que disfrutes de la Comunidad Valenciana ahorrando en tus reservas.</p>
-      <a routerLink="/" class="btn-volver">Ver Actividades Regulares</a>
+  <main class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        
+        <div class="card shadow-sm p-4 text-center border-0">
+          <div class="card-body">
+            <h3 class="card-title text-primary mb-3">No hay ofertas disponibles</h3>
+            <p class="card-text text-muted mb-4">
+              Actualmente no disponemos de ninguna promoción activa. Estamos diseñando nuevos packs 
+              de temporada para que disfrutes de la Comunidad Valenciana ahorrando en tus reservas.
+            </p>
+            <a routerLink="/" class="btn btn-primary btn-lg">Ver Actividades Regulares</a>
+          </div>
+        </div>
+
+      </div>
     </div>
-  </section>
+  </main>
 </div>

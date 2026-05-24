@@ -1,174 +1,20 @@
+.text-primary { 
+  color: #A0685D !important; 
+}
+.btn-success { 
+  background-color: #A0685D; 
+  border-color: #A0685D; 
+}
+.btn-success:hover { 
+  background-color: #855348; 
+  border-color: #855348; 
+}
+
+.table-dark { 
+  background-color: #A0685D !important; 
+}
+
 .gestion-actividades {
-  font-family: Arial, sans-serif;
   background-color: #F6F1EC;
   min-height: 100vh;
-}
-
-.hero {
-  height: 200px;
-  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #F6F1EC;
-}
-
-.hero h1 {
-  font-size: 32px;
-  margin: 0;
-}
-
-.contenedor-principal {
-  padding: 30px 20px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-h2 {
-  color: #A0685D;
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.seccion-formulario, .seccion-tabla {
-  background: white;
-  padding: 25px;
-  border-radius: 6px;
-  border: 1px solid #E0E0E0;
-  margin-bottom: 30px;
-}
-
-.campo {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.campo label {
-  font-weight: bold;
-  color: #333333;
-  font-size: 14px;
-}
-
-.campo input, .campo select {
-  padding: 10px;
-  border: 1px solid #CCCCCC;
-  border-radius: 4px;
-  font-size: 15px;
-  background-color: #FFFFFF;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.botones-formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.btn-guardar {
-  background-color: #A0685D;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.btn-guardar:hover {
-  background-color: #855348;
-}
-
-.btn-cancelar {
-  background-color: #E74C3C;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.btn-cancelar:hover {
-  background-color: #C0392B;
-}
-
-.tabla-responsiva {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #E0E0E0;
-  font-size: 15px;
-}
-
-th {
-  background-color: #A0685D;
-  color: white;
-  font-weight: bold;
-}
-
-.sin-datos {
-  text-align: center;
-  color: #666666;
-  padding: 20px;
-}
-
-.badge {
-  background-color: #EFEFEF;
-  color: #A0685D;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.botones-accion {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-editar {
-  background: white;
-  border: 1px solid #A0685D;
-  color: #A0685D;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-editar:hover {
-  background-color: #A0685D;
-  color: white;
-}
-
-.btn-borrar {
-  background: white;
-  border: 1px solid #C0392B;
-  color: #C0392B;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-borrar:hover {
-  background-color: #C0392B;
-  color: white;
 }

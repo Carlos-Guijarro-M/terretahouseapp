@@ -19,19 +19,15 @@ export class Reserva {
     return this.http.post(this.url, data, { headers: this.getAuthHeaders() });
   }
 
-  actualizarReserva(id: number, data: any) {
-    return this.http.put(`${this.url}?id=${id}`, data, { headers: this.getAuthHeaders() });
-  }
-
   eliminarReserva(id: number) {
     return this.http.delete(`${this.url}?id=${id}`, { headers: this.getAuthHeaders() });
   }
 
+  
   getActividades() {
-    // Si la lista de actividades no requiere autenticación, puedes quitar el headers
-    return this.http.get(this.urlActividades);
+    return this.http.get(this.urlActividades, { headers: this.getAuthHeaders() });
   }
-
+  
   crearActividad(data: any) {
     return this.http.post(this.urlActividades, data, { headers: this.getAuthHeaders() });
   }
@@ -48,17 +44,14 @@ export class Reserva {
     const userStorage = localStorage.getItem('user');
     let token = '';
 
-    if (userStorage !== null && userStorage !== '') {
+    if (userStorage) {
       const user = JSON.parse(userStorage);
-      // Extraemos el api_token que recibimos en el login
-      if (user.api_token) {
-        token = user.api_token;
-      }
+      token = user.api_token || '';
     }
 
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
     });
   }
 }

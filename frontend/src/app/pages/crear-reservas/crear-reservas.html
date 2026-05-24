@@ -1,65 +1,52 @@
 <div class="gestion-actividades">
-
-  <section class="hero">
+  <header class="hero d-flex align-items-center justify-content-center text-white text-center"
+          style="height: 200px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg') center/cover;">
     <h1>Panel de Administración</h1>
-  </section>
+  </header>
 
-  <div class="contenedor-principal">
-
-    <!-- Formulario de alta y edición -->
-    <section class="seccion-formulario">
+  <main class="container py-5">
+    <section class="card p-4 shadow-sm mb-5">
+      <h2 class="text-primary mb-4">
+        {{ nuevaActividad.id === null ? 'Crear Nueva Actividad' : 'Modificando Actividad: ' + nuevaActividad.id }}
+      </h2>
       
-      @if (nuevaActividad.id === null) {
-        <h2>Crear Nueva Actividad</h2>
-      } @else {
-        <h2>Modificando Actividad: {{ nuevaActividad.id }}</h2>
-      }
-      
-      <form (submit)="guardarActividad($event)">
-        <div class="campo">
-          <label for="titulo">Título de la actividad:</label>
-          <input type="text" id="titulo" name="titulo" [(ngModel)]="nuevaActividad.titulo" placeholder="Ej: Tour por el Barrio del Carmen" required>
+      <form (submit)="guardarActividad($event)" class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Título</label>
+          <input type="text" class="form-control" [(ngModel)]="nuevaActividad.titulo" name="titulo" required>
         </div>
-
-        <div class="campo">
-          <label for="fecha">Fecha del evento:</label>
-          <input type="date" id="fecha" name="fecha" [(ngModel)]="nuevaActividad.fecha" required>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Fecha</label>
+          <input type="date" class="form-control" [(ngModel)]="nuevaActividad.fecha" name="fecha" required>
         </div>
-
-        <div class="campo">
-          <label for="estado">Estado inicial:</label>
-          <select id="estado" name="estado" [(ngModel)]="nuevaActividad.estado">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Estado</label>
+          <select class="form-select" [(ngModel)]="nuevaActividad.estado" name="estado">
             <option value="disponible">Disponible</option>
             <option value="completo">Completo</option>
           </select>
         </div>
-
-        <div class="botones-formulario">
-          <button type="submit" class="btn-guardar">Guardar Actividad</button>
-          
-          @if (nuevaActividad.id !== null) {
-            <button type="button" class="btn-cancelar" (click)="limpiarFormulario()">Cancelar Edición</button>
-          }
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-success w-100">Guardar</button>
         </div>
+        @if (nuevaActividad.id !== null) {
+          <div class="col-12">
+            <button type="button" class="btn btn-outline-danger" (click)="limpiarFormulario()">Cancelar Edición</button>
+          </div>
+        }
       </form>
     </section>
 
-    <!-- Tabla de gestión de contenidos -->
-    <section class="seccion-tabla">
-      <h2>Listado de Actividades</h2>
-
+    <section class="card p-4 shadow-sm">
+      <h2 class="text-primary mb-4">Listado de Actividades</h2>
       @if (actividades.length === 0) {
-        <p class="sin-datos">No hay actividades creadas todavía en el sistema.</p>
+        <p class="text-center text-muted">No hay actividades creadas.</p>
       } @else {
-        <div class="tabla-responsiva">
-          <table>
-            <thead>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-dark">
               <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>ID</th><th>Título</th><th>Fecha</th><th>Estado</th><th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -68,11 +55,15 @@
                   <td><strong>{{ act.id }}</strong></td>
                   <td>{{ act.titulo }}</td>
                   <td>{{ act.fecha }}</td>
-                  <td><span class="badge">{{ act.estado || 'disponible' }}</span></td>
                   <td>
-                    <div class="botones-accion">
-                      <button type="button" class="btn-editar" (click)="cargarParaEditar(act)">Editar</button>
-                      <button type="button" class="btn-borrar" (click)="eliminarActividad(act.id)">Borrar</button>
+                    <span class="badge" [ngClass]="act.estado === 'Abierta' ? 'bg-success' : 'bg-warning text-dark'">
+                      {{ act.estado }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-primary" (click)="cargarParaEditar(act)">Editar</button>
+                      <button class="btn btn-outline-danger" (click)="eliminarActividad(act.id)">Borrar</button>
                     </div>
                   </td>
                 </tr>
@@ -82,6 +73,5 @@
         </div>
       }
     </section>
-
-  </div>
+  </main>
 </div>

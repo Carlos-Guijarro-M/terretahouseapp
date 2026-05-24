@@ -1,45 +1,46 @@
+<app-hero-carousel></app-hero-carousel>
+
 <div class="home-sitio">
+  <section class="container py-5">
+    <h2 class="text-center titulo-experiencias mb-5 fw-bold">Próximas Experiencias Disponibles</h2>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Descubre la Comunidad Valenciana</h1>
-      <p>Las mejores rutas y experiencias turísticas de la Terreta</p>
-    </div>
-  </section>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      @for (act of actividades; track act.id) {
+        <div class="col">
+          <div class="card h-100 border-top border-4 shadow-sm" style="border-color: #A0685D;">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title fw-bold mt-2 text-dark">{{ act.titulo }}</h5>
+              
+              <div class="mb-3">
+                <span class="badge" [ngClass]="act.estado === 'disponible' ? 'bg-success' : 'bg-danger'">
+                  {{ act.estado | uppercase }}
+                </span>
+              </div>
+              
+              <p class="card-text text-muted mb-4">Fecha: <strong>{{ act.fecha }}</strong></p>
 
-  <section class="seccion-experiencias">
-    <h2>Próximas Experiencias Disponibles</h2>
-    <p class="subtitulo">Reserva tu plaza antes de que se agoten</p>
-
-    @if (!actividades || actividades.length === 0) {
-      <p class="sin-actividades">No hay actividades programadas en este momento. ¡Vuelve pronto!</p>
-    } @else {
-      <div class="grid-actividades">
-        @for (act of actividades; track act.id) {
-          
-          @if (!yaReservada(act.titulo)) {
-            <div class="tarjeta-actividad">
-              <span class="etiqueta-estado" [ngClass]="act.estado">{{ act.estado | uppercase }}</span>
-              <h3>{{ act.titulo }}</h3>
-              <p class="fecha-actividad">Fecha: <strong>{{ act.fecha }}</strong></p>
-
-              <div class="zona-interaccion">
+              <div class="mt-auto">
                 @if (!userLogeado) {
-                  <a routerLink="/login" class="btn-accion btn-bloqueado">Inicia sesión para reservar</a>
-                } @else if (userLogeado && !isAdmin) {
-                  <button type="button" (click)="reservarActividad(act.id)" class="btn-accion btn-reserva" [disabled]="act.estado === 'completo'">
-                    Reservar Plaza
+                  <a routerLink="/login" class="btn btn-outline-secondary w-100">Inicia sesión para reservar</a>
+                } @else if (isAdmin) {
+                  <p class="text-muted small text-center italic">Vista de administrador.</p>
+                } @else {
+                  <button type="button" 
+                          (click)="reservarActividad(act)" 
+                          class="btn btn-primary w-100" 
+                          [disabled]="act.estado === 'completo' || yaReservada(act.id)">
+                    {{ yaReservada(act.id) ? 'Ya Reservado' : (act.estado === 'completo' ? 'Sin plazas' : 'Reservar Plaza') }}
                   </button>
-                } @else if (userLogeado && isAdmin) {
-                  <p class="aviso-admin">Vista de administrador (Gestionable desde tu panel)</p>
                 }
               </div>
             </div>
-          }
-
-        }
-      </div>
-    }
+          </div>
+        </div>
+      } @empty {
+        <div class="col-12 text-center py-4">
+          <p class="text-muted">Cargando actividades o no hay disponibles...</p>
+        </div>
+      }
+    </div>
   </section>
-
 </div>

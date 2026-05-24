@@ -11,8 +11,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './header.css'
 })
 export class Header {
-
   menuAbierto: boolean = false;
+  isMenuCollapsed: boolean = true;
 
   constructor(public auth: Auth, private router: Router) {}
 
@@ -24,14 +24,9 @@ export class Header {
     return this.auth.getUser()?.email || '';
   }
 
-  // Ajustado: Comprobamos si 'ROLE_ADMIN' existe dentro de la cadena 'roles'
   comprobarAdmin(): boolean {
     const usuario = this.auth.getUser();
-    if (usuario === null || !usuario.roles) {
-      return false;
-    }
-    // Si roles es una cadena (ej: "ROLE_USER,ROLE_ADMIN"), usamos includes
-    return usuario.roles.includes('ROLE_ADMIN');
+    return usuario?.roles?.includes('ROLE_ADMIN') || false;
   }
 
   conmutarMenu() {
@@ -40,17 +35,16 @@ export class Header {
 
   cerrarMenu() {
     this.menuAbierto = false;
+    this.isMenuCollapsed = true;
   }
 
   logout() {
-    this.menuAbierto = false;
+    this.cerrarMenu();
     this.auth.logout().subscribe({
       next: () => {
-        this.auth.clearUser();
         this.router.navigate(['/login']);
       },
       error: () => {
-        this.auth.clearUser();
         this.router.navigate(['/login']);
       }
     });

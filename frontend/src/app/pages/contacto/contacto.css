@@ -1,74 +1,16 @@
-.contacto {
-  font-family: Arial, sans-serif;
+.contacto .form-control {
+    background-color: #f8f5f0; 
+    border: 1px solid #dcd1c7;
 }
 
-/* Fondo principal de la cabecera */
-.hero {
-  height: 300px;
-  background-image: url('/hero1-home.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  text-align: center;
-  padding: 20px;
+.contacto .form-control:focus {
+    background-color: #ffffff; 
+    border-color: #A0685D;
+    box-shadow: 0 0 0 0.25rem rgba(160, 104, 93, 0.25);
 }
 
-.hero-content h1 {
-  font-size: 40px;
-  margin-bottom: 10px;
-}
 
-.section {
-  padding: 40px 20px;
-}
-
-.section h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Estilos del formulario en vertical */
-.contact-form {
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.contact-form label {
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.contact-form input,
-.contact-form textarea {
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #CCCCCC;
-}
-
-/* Cambio de borde sencillo al pinchar */
-.contact-form input:focus,
-.contact-form textarea:focus {
-  border: 2px solid #A0685D;
-}
-
-/* Boton de enviar tradicional */
-.contact-form button {
-  margin-top: 15px;
-  padding: 12px;
-  background-color: #A0685D;
-  color: #FFFFFF;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.contact-form button:hover {
-  background-color: #855348;
+.btn-primary:hover {
+    background-color: #855348 !important;
+    border-color: #855348 !important;
 }

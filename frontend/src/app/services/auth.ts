@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators'; // Importante para interceptar la respuesta
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +13,8 @@ export class Auth {
     this.currentUser = this.loadUserFromStorage();
   }
 
-  // Ahora el login guarda automáticamente el usuario si es exitoso
   login(data: any) {
-    return this.http.post(`${this.url}/login.php`, data).pipe(
-      tap((res: any) => {
-        if (res) {
-          this.setUser(res); // Guardamos en memoria y en localStorage
-        }
-      })
-    );
+    return this.http.post(`${this.url}/login.php`, data);
   }
 
   register(data: any) {
@@ -30,14 +22,7 @@ export class Auth {
   }
 
   getUser() {
-    // Retornamos el usuario actual. Si es nulo, intentamos recargar
     return this.currentUser;
-  }
-
-  // Método auxiliar para saber si es admin desde cualquier parte de la app
-  isAdmin(): boolean {
-    const user = this.getUser();
-    return user && user.roles && user.roles.includes('ROLE_ADMIN');
   }
 
   setUser(user: any) {
@@ -45,25 +30,16 @@ export class Auth {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  clearUser() {
+  logout() {
     this.currentUser = null;
     localStorage.removeItem('user');
-  }
-
-  logout() {
-    // Al hacer logout, limpiamos localmente sin esperar necesariamente al servidor
-    this.clearUser();
     return this.http.post(`${this.url}/logout.php`, {});
   }
 
   private loadUserFromStorage() {
     const data = localStorage.getItem('user');
-    if (data !== null && data !== '') {
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        return null;
-      }
+    if (data) {
+      return JSON.parse(data);
     }
     return null;
   }

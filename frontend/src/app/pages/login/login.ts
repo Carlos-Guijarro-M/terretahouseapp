@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,6 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrls: ['./login.css'],
 })
 export class Login {
   formData = {
@@ -16,10 +15,9 @@ export class Login {
     password: ''
   };
   
-  error = '';
+  error: string = '';
 
-  private auth = inject(Auth);
-  private router = inject(Router);
+  constructor(private auth: Auth, private router: Router) {}
 
   login() {
     this.error = '';
@@ -35,8 +33,8 @@ export class Login {
         this.router.navigate(['/']);
       },
       error: () => {
-        this.error = 'El email o la contraseña no son correctos';
-      },
+        this.error = 'Email o contraseña incorrectos';
+      }
     });
   }
 }

@@ -1,47 +1,47 @@
 <div class="reservas">
+  <header class="hero d-flex align-items-center justify-content-center text-white" 
+          style="height: 35vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg') center/cover;">
+    <h1 class="fw-bold">{{ tituloPagina }}</h1>
+  </header>
 
-  <section class="hero">
-    <h1>{{ tituloPagina }}</h1>
-  </section>
-
-  <section class="seccion-listado">
-    <h2>Listado actual</h2>
+  <main class="container py-5">
+    <h2 class="text-center mb-5 fw-bold" style="color: #A0685D;">Listado actual</h2>
 
     @if (reservas.length === 0) {
-      <div class="no-reservas">
-        @if (isAdmin === true) {
+      <div class="alert alert-warning text-center border-dashed">
+        @if (isAdmin) {
           No hay actividades creadas todavía. Abre el panel para añadir la primera.
         } @else {
           No tienes reservas todavía. Pásate por el inicio para buscar actividades.
         }
       </div>
     } @else {
-      
-      <div class="grid-reservas">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @for (r of reservas; track r.id) {
-          <div class="tarjeta-reserva">
-            <h3>{{ r.titulo }}</h3>
-            <p class="fecha"><strong>Fecha:</strong> {{ r.fecha }}</p>
-            <p class="estado">
-              <strong>Estado:</strong> 
-              <span class="badge">{{ r.estado || 'pendiente' }}</span>
-            </p>
+          <div class="col">
+            <div class="card h-100 shadow-sm border-0 border-top border-4" style="border-color: #A0685D;">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-bold mb-3">{{ r.titulo }}</h5>
+                <p class="card-text mb-1"><strong>Fecha:</strong> {{ r.fecha }}</p>
+                <p class="card-text mb-4">
+                  <strong>Estado:</strong> 
+                  <span class="badge bg-light border" style="color: #A0685D; border-color: #A0685D;">
+                    {{ r.estado || 'pendiente' }}
+                  </span>
+                </p>
 
-            @if (isAdmin === false) {
-              <button type="button" (click)="cancelarReserva(r.id)" class="btn-cancelar">Cancelar Reserva</button>
-            }
-
-            @if (isAdmin === true) {
-              <div class="acciones-admin">
-                <button type="button" (click)="eliminarActividad(r.id)" class="btn-borrar-admin">Eliminar Actividad</button>
+                <div class="mt-auto">
+                  @if (!isAdmin) {
+                    <button type="button" (click)="cancelarReserva(r.id)" class="btn btn-outline-danger w-100">Cancelar Reserva</button>
+                  } @else {
+                    <button type="button" (click)="eliminarActividad(r.id)" class="btn btn-outline-secondary w-100">Eliminar Actividad</button>
+                  }
+                </div>
               </div>
-            }
+            </div>
           </div>
         }
       </div>
-
     }
-
-  </section>
-
+  </main>
 </div>

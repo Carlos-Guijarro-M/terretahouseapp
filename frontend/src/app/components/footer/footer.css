@@ -1,89 +1,18 @@
-/* Contenedor principal del pie de pagina */
-.footer {
-  background-color: #A0685D;
-  color: #F6F1EC;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
+
+.nav-link {
+    transition: color 0.3s ease;
+    cursor: pointer;
 }
 
-.footer-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
+.nav-link:hover {
+    color: #CCCCCC !important;
+    text-decoration: none;
 }
 
-.footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+footer p, footer a {
+    font-weight: bold;
 }
 
-.footer-logo {
-  height: 60px;
-  width: auto;
-}
-
-/* Estilos para los enlaces de las columnas */
-.footer-col a {
-  text-decoration: none;
-  color: #F6F1EC;
-  font-weight: bold;
-  font-size: 24px;
-}
-
-.footer-col p {
-  font-size: 24px;
-}
-
-/* Efecto basico al pasar el raton */
-.footer-col a:hover {
-  color: #CCCCCC;
-}
-
-/* Linea separadora simple */
-.footer-divider {
-  height: 1px;
-  background-color: #F6F1EC;
-  width: 100%;
-}
-
-/* Enlaces de abajo del todo */
-.footer-bottom {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.footer-bottom a {
-  text-decoration: none;
-  color: #F6F1EC;
-  font-size: 24px;
-}
-
-.footer-bottom a:hover {
-  color: #CCCCCC;
-}
-
-/* Adaptacion para pantallas moviles */
-@media (max-width: 768px) {
-  .footer-top {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .footer-col {
-    align-items: center;
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
-
-  .footer-logo {
-    height: 55px;
-  }
+hr.border-light {
+    opacity: 1;
 }
