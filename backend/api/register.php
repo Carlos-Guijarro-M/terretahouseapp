@@ -2,36 +2,66 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 require_once '../includes/db.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
+$email = $_POST['email'] ?? '';
+$nombre = $_POST['nombre'] ?? '';
+$apellidos = $_POST['apellidos'] ?? '';
+$password = $_POST['password'] ?? '';
 
-if (!isset($data['email']) || !isset($data['password'])) {
+if (empty($email) || empty($password) || empty($nombre) || empty($apellidos)) {
     http_response_code(400);
     echo json_encode(['message' => 'Faltan datos obligatorios']);
     exit;
 }
 
-$email = $data['email'];
-$password = password_hash($data['password'], PASSWORD_DEFAULT);
+$baneo = $conn->prepare("SELECT baneado FROM user WHERE email = ?");
+$baneo->bind_param("s", $email);
+$baneo->execute();
+$userBaneo = $baneo->get_result()->fetch_assoc();
 
-if ($email === 'admin@gmail.com') {
-    $rol_final = json_encode(['ROLE_USER', 'ROLE_ADMIN']);
-} else {
-    $rol_final = json_encode(['ROLE_USER']);
+if ($userBaneo && $userBaneo['baneado'] == 1) {
+    http_response_code(403);
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Este correo electrónico está baneado, registrese con otro correo.']);
+    exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO user (email, password, roles) VALUES (?, ?, ?)");
-$stmt->bind_param("sss", $email, $password, $rol_final);
+$fotoRuta = null;
+if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+    $carpeta = __DIR__ . '/../uploads/perfiles/';
+    if (!is_dir($carpeta)) mkdir($carpeta, 0755, true);
+    
+    $nombreArchivo = time() . '_' . preg_replace('/\s+/', '', basename($_FILES['foto']['name']));
+    if (move_uploaded_file($_FILES['foto']['tmp_name'], $carpeta . $nombreArchivo)) {
+        $fotoRuta = $nombreArchivo;
+    }
+}
+
+$hashPassword = password_hash($password, PASSWORD_DEFAULT);
+
+$stmt = $conn->prepare("INSERT INTO user (email, nombre, apellidos, password, foto) VALUES (?, ?, ?, ?, ?)");
+$stmt->bind_param("sssss", $email, $nombre, $apellidos, $hashPassword, $fotoRuta);
 
 if ($stmt->execute()) {
-    echo json_encode(['message' => 'Usuario registrado con éxito']);
+    $userId = $conn->insert_id;
+
+    $rolId = ($email === 'admin@gmail.com') ? 1 : 2;
+    
+    $stmtRol = $conn->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");
+    $stmtRol->bind_param("ii", $userId, $rolId);
+    
+    if ($stmtRol->execute()) {
+        echo json_encode(['message' => 'Usuario registrado con éxito']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Usuario creado, pero hubo un error asignando el rol']);
+    }
 } else {
     http_response_code(400);
-    echo json_encode(['message' => 'Error al guardar el usuario']);
+    echo json_encode(['message' => 'Error al registrar el usuario en la base de datos']);
 }
 ?>

@@ -7,14 +7,18 @@ if (!isset($headers['Authorization'])) {
     exit;
 }
 
-// quitar palabra bearer del token
 $token = str_replace('Bearer ', '', $headers['Authorization']);
 
-$consulta = $conn->prepare("SELECT id, roles FROM user WHERE api_token = ?");
+$consulta = $conn->prepare("
+    SELECT u.id, u.baneado, GROUP_CONCAT(r.nombre) as roles 
+    FROM user u
+    LEFT JOIN user_roles ur ON u.id = ur.user_id
+    LEFT JOIN roles r ON ur.role_id = r.id
+    WHERE u.api_token = ?
+    GROUP BY u.id");
 $consulta->bind_param("s", $token);
 $consulta->execute();
-$resultado = $consulta->get_result();
-$usuario = $resultado->fetch_assoc();
+$usuario = $consulta->get_result()->fetch_assoc();
 
 if (!$usuario) {
     http_response_code(401);
@@ -22,6 +26,12 @@ if (!$usuario) {
     exit;
 }
 
+if ($usuario['baneado']) {
+    http_response_code(403);
+    echo json_encode(['message' => 'Usuario baneado']);
+    exit;
+}
+
 $userId = $usuario['id'];
-$userRoles = json_decode($usuario['roles'], true);
+$userRoles = explode(',', $usuario['roles']);
 ?>
