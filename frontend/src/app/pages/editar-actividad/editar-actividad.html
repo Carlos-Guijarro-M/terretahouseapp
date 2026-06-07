@@ -1,0 +1,50 @@
+<div class="gestion-actividades">
+  <header class="hero d-flex align-items-center justify-content-center text-white text-center" style="height: 200px; background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/hero1-home.jpg') center/cover;">
+    <h1>Modificar Actividad</h1>
+  </header>
+
+  <main class="container py-5">
+    <section class="card p-4 shadow-sm">
+      <h2 class="text-primary mb-4">Editando: {{ actividad.titulo }}</h2>
+
+      <form (submit)="guardarCambios()" class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Título</label>
+          <input type="text" class="form-control" [(ngModel)]="actividad.titulo" name="titulo" required />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Provincia</label>
+          <select class="form-select" [(ngModel)]="actividad.provincia" name="provincia" required>
+            <option value="Valencia">Valencia</option>
+            <option value="Castellón">Castellón</option>
+            <option value="Alicante">Alicante</option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Fecha</label>
+          <input type="date" class="form-control" [(ngModel)]="actividad.fecha" name="fecha" required />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Plazas Totales</label>
+          <input type="number" class="form-control" [(ngModel)]="actividad.plazas_totales" name="plazas_totales" min="1" required />
+        </div>
+
+        <div class="col-md-9">
+          <label class="form-label fw-bold">Imagen de la Actividad</label>
+          @if (actividad.imagen_url) {
+            <img [src]="actividad.imagen_url" class="d-block mb-2" style="height: 80px; object-fit: cover; border-radius: 4px;">
+          }
+          <input type="file" class="form-control" (change)="onImagenSeleccionada($event)" accept="image/*" />
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end gap-2">
+          <button type="submit" class="btn btn-success">Guardar Cambios</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>

@@ -1,26 +1,59 @@
 <div class="ofertas-contenedor">
-  <header class="hero-simple text-white d-flex flex-column align-items-center justify-content-center text-center"
-          style="height: 35vh; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg') center/cover;">
-    <h1 class="display-4 fw-bold">Ofertas Especiales</h1>
-    <p class="lead">Encuentra las mejores actividades al mejor precio</p>
+  <header class="hero-simple text-white d-flex flex-column align-items-center justify-content-center text-center">
+    <h1 class="display-3 fw-bold">Nuestros Packs</h1>
+    <p class="lead">Experiencias completas por zonas de la Comunidad Valenciana.</p>
   </header>
 
   <main class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8 col-lg-6">
-        
-        <div class="card shadow-sm p-4 text-center border-0">
-          <div class="card-body">
-            <h3 class="card-title text-primary mb-3">No hay ofertas disponibles</h3>
-            <p class="card-text text-muted mb-4">
-              Actualmente no disponemos de ninguna promoción activa. Estamos diseñando nuevos packs 
-              de temporada para que disfrutes de la Comunidad Valenciana ahorrando en tus reservas.
-            </p>
-            <a routerLink="/" class="btn btn-primary btn-lg">Ver Actividades Regulares</a>
-          </div>
-        </div>
 
+    <div class="alert alert-info text-center mb-5">
+      <strong>Próximamente</strong> — Estamos preparando estos packs. Muy pronto podrás reservarlos directamente desde aquí.
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <h5 class="text-primary">Pack La Safor</h5>
+          <p class="text-muted mb-1">Gandía y sus alrededores esconden mucho más que playa. Acequias, naranjales y pueblos de montaña a diez minutos del mar.</p>
+          <ul class="list-group list-group-flush my-3">
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Ruta por el casco histórico de Gandía</li>
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Visita al Palacio Ducal de los Borgia</li>
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Senderismo por la Vall de Gallinera</li>
+          </ul>
+          <p class="fw-bold text-primary fs-5 mb-0">55€ / persona</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <h5 class="text-primary">Pack L'Albufera</h5>
+          <p class="text-muted mb-1">El parque natural más conocido de Valencia visto de otra manera, lejos de las rutas habituales y cerca del agua de verdad.</p>
+          <ul class="list-group list-group-flush my-3">
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Paseo en barca al amanecer</li>
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Visita a los arrozales con guía local</li>
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Degustación de productos de la zona</li>
+          </ul>
+          <p class="fw-bold text-primary fs-5 mb-0">49€ / persona</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <h5 class="text-primary">Pack El Maestrat</h5>
+          <p class="text-muted mb-1">Castillos medievales, barrancos y pueblos que parecen parados en el tiempo. Una zona que muy poca gente conoce y que merece mucho más.</p>
+          <ul class="list-group list-group-flush my-3">
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Ruta por Morella y su muralla</li>
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Visita al castillo templario de Xivert</li>
+            <li class="list-group-item bg-transparent border-0 ps-0"><span class="text-primary fw-bold">·</span> Senderismo por el Barranc de la Valltorta</li>
+          </ul>
+          <p class="fw-bold text-primary fs-5 mb-0">60€ / persona</p>
+        </div>
       </div>
     </div>
+
+    <div class="bg-white p-5 rounded shadow-sm text-center">
+      <h3 class="text-primary">¿Tienes alguna duda?</h3>
+      <p>Mientras preparamos los packs, puedes ver las actividades que ya tenemos disponibles.</p>
+      <a routerLink="/" class="btn btn-primary btn-lg mt-3">Ver actividades</a>
+    </div>
+
   </main>
 </div>

@@ -1,0 +1,40 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <h2 class="fw-bold mb-4">Editar Perfil</h2>
+          
+          <div class="mb-3">
+            <label class="form-label">Nombre de usuario</label>
+            <input [(ngModel)]="usuario.nombre" class="form-control" type="text">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <input [(ngModel)]="usuario.email" class="form-control" type="email">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Cambiar foto de perfil</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Contraseña Actual</label>
+            <input [(ngModel)]="usuario.password_actual" class="form-control" type="password" placeholder="••••••••">
+            <small class="text-muted">Necesario para cambiar la contraseña.</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nueva Contraseña</label>
+            <input [(ngModel)]="usuario.password_nueva" class="form-control" type="password" placeholder="••••••••">
+            <small class="text-muted">Déjalo vacío si no deseas cambiarla.</small>
+          </div>
+          
+          <button (click)="guardar()" class="btn btn-primary w-100 mt-3">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

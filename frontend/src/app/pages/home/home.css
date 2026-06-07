@@ -6,8 +6,20 @@
   padding-bottom: 2rem !important; 
 }
 
+.border-primary {
+  border-color: #8a5a50 !important;
+}
+
+.text-primary {
+  color: #8a5a50 !important;
+}
+
+.bg-primary {
+  background-color: #8a5a50 !important;
+}
+
 .titulo-experiencias {
-  color: #333 !important;
+  color: #8a5a50 !important;
 }
 
 .card-title {

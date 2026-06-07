@@ -1,3 +1,7 @@
+.navbar-nav {
+  gap: 5px; 
+}
+
 .navbar-brand img {
   max-height: 60px;
   width: auto;
@@ -11,6 +15,9 @@
 .dropdown-menu {
   margin-top: 10px;
   border-radius: 6px;
+  display: block; 
+  right: 0;
+  left: auto;
 }
 
 .admin-tag {
@@ -23,4 +30,8 @@
 
 .text-danger:hover {
   background-color: #fff5f5;
+}
+
+.navbar {
+  background-color: #A0685D;
 }

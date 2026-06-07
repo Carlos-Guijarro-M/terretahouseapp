@@ -1,0 +1,20 @@
+.text-primary { 
+  color: #A0685D !important; 
+}
+.btn-success { 
+  background-color: #A0685D; 
+  border-color: #A0685D; 
+}
+.btn-success:hover { 
+  background-color: #855348; 
+  border-color: #855348; 
+}
+
+.table-dark { 
+  background-color: #A0685D !important; 
+}
+
+.gestion-actividades {
+  background-color: #F6F1EC;
+  min-height: 100vh;
+}

@@ -2,35 +2,76 @@
 
 <div class="home-sitio">
   <section class="container py-5">
-    <h2 class="text-center titulo-experiencias mb-5 fw-bold">Próximas Experiencias Disponibles</h2>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      @for (act of actividades; track act.id) {
-        <div class="col">
-          <div class="card h-100 border-top border-4 shadow-sm" style="border-color: #A0685D;">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title fw-bold mt-2 text-dark">{{ act.titulo }}</h5>
-              
-              <div class="mb-3">
-                <span class="badge" [ngClass]="act.estado === 'disponible' ? 'bg-success' : 'bg-danger'">
-                  {{ act.estado | uppercase }}
-                </span>
+    <div class="text-center mb-5">
+      @if (userLogeado) {
+        <h2 class="display-6 fw-bold titulo-experiencias mb-4">
+          @if (isAdmin) {
+            Hola {{ nombreUsuario }}, estas son todas las actividades.
+          } @else {
+            Hola {{ nombreUsuario }}, estas son tus reservas y las experiencias disponibles.
+          }
+        </h2>
+      } @else {
+        <h2 class="display-6 fw-bold titulo-experiencias mb-4">Próximas Experiencias Disponibles</h2>
+      }
+
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Todas'" (click)="filtrarPorProvincia('Todas')">Todas</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Valencia'" (click)="filtrarPorProvincia('Valencia')">Valencia</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Castellón'" (click)="filtrarPorProvincia('Castellón')">Castellón</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Alicante'" (click)="filtrarPorProvincia('Alicante')">Alicante</button>
+
+      <div class="d-flex justify-content-center mt-3">
+        <div class="input-group w-50">
+          <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+          <input type="text" class="form-control" placeholder="Buscar actividad..." [(ngModel)]="textoBusqueda" />
+        </div>
+      </div>
+    </div>
+
+    @if (userLogeado && misReservasFiltradas.length > 0) {
+      <div class="mb-5">
+        <h3 class="fw-bold mb-4">Tus Reservas</h3>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+          @for (res of misReservasFiltradas; track res.id) {
+            <div class="col">
+              <div class="card h-100 shadow-sm border-0 border-top border-4" style="border-color: #A0685D;">
+                <img [src]="res.imagen_url" class="card-img-top" style="height: 180px; object-fit: cover;" (click)="app.abrirImagen(res.imagen_url)">
+                <div class="card-body">
+                  <span class="badge bg-secondary mb-2">{{ res.provincia }}</span>
+                  <h5 class="card-title fw-bold">{{ res.titulo }}</h5>
+                  <p class="card-text mb-1"><strong>Fecha:</strong> {{ res.fecha }}</p>
+                  <p class="card-text mb-2"><strong>Plazas:</strong> {{ res.plazas_ocupadas || 0 }}/{{ res.plazas_totales }}</p>
+                  <button type="button" (click)="cancelarReserva(res.id)" class="btn btn-outline-danger w-100">Cancelar Reserva</button>
+                </div>
               </div>
-              
-              <p class="card-text text-muted mb-4">Fecha: <strong>{{ act.fecha }}</strong></p>
+            </div>
+          }
+        </div>
+        <hr class="my-5">
+      </div>
+    }
 
-              <div class="mt-auto">
-                @if (!userLogeado) {
-                  <a routerLink="/login" class="btn btn-outline-secondary w-100">Inicia sesión para reservar</a>
-                } @else if (isAdmin) {
-                  <p class="text-muted small text-center italic">Vista de administrador.</p>
-                } @else {
-                  <button type="button" 
-                          (click)="reservarActividad(act)" 
-                          class="btn btn-primary w-100" 
-                          [disabled]="act.estado === 'completo' || yaReservada(act.id)">
-                    {{ yaReservada(act.id) ? 'Ya Reservado' : (act.estado === 'completo' ? 'Sin plazas' : 'Reservar Plaza') }}
+    <h3 class="fw-bold mb-4">Experiencias Disponibles</h3>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      @for (act of actividadesDisponibles; track act.id) {
+        <div class="col">
+          <div class="card h-100 border-0 shadow-sm">
+            <img [src]="act.imagen_url || '/placeholder-image.jpg'" class="card-img-top" style="height: 200px; object-fit: cover; cursor: pointer;" (click)="app.abrirImagen(act.imagen_url)">
+            <div class="card-body d-flex flex-column">
+              <span class="badge bg-secondary mb-2 align-self-start">{{ act.provincia }}</span>
+              <h5 class="card-title fw-bold mt-2 text-dark">{{ act.titulo }}</h5>
+              <p class="text-muted mb-1">Fecha: <strong>{{ act.fecha }}</strong></p>
+              <p class="text-muted mb-3">Plazas: <strong>{{ act.plazas_ocupadas }}/{{ act.plazas_totales }}</strong></p>
+              
+              <div class="mt-auto d-flex gap-2">
+                <button type="button" (click)="verDetalleActividad(act)" class="btn btn-outline-secondary w-50">Vista Previa</button>
+                @if (userLogeado) {
+                  <button type="button" (click)="reservarActividad(act)" class="btn btn-primary w-50" [disabled]="act.plazas_ocupadas >= act.plazas_totales">
+                    {{ act.plazas_ocupadas >= act.plazas_totales ? 'Completo' : 'Reservar' }}
                   </button>
+                } @else {
+                  <a routerLink="/login" class="btn btn-primary w-50">Iniciar sesión</a>
                 }
               </div>
             </div>
@@ -38,9 +79,39 @@
         </div>
       } @empty {
         <div class="col-12 text-center py-4">
-          <p class="text-muted">Cargando actividades o no hay disponibles...</p>
+          <p class="text-muted">No hay más actividades disponibles en esta zona.</p>
         </div>
       }
     </div>
+
   </section>
 </div>
+
+@if (actividadSeleccionada) {
+  <div class="modal d-block" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">{{ actividadSeleccionada.titulo }}</h5>
+          <button type="button" class="btn-close" (click)="cerrarDetalle()"></button>
+        </div>
+        <div class="modal-body">
+          <img [src]="actividadSeleccionada.imagen_url || '/placeholder-image.jpg'" class="w-100 mb-3" style="height: 300px; object-fit: cover; border-radius: 8px;">
+          <p><strong>Provincia:</strong> {{ actividadSeleccionada.provincia }}</p>
+          <p><strong>Fecha:</strong> {{ actividadSeleccionada.fecha }}</p>
+          <p><strong>Plazas:</strong> {{ actividadSeleccionada.plazas_ocupadas }}/{{ actividadSeleccionada.plazas_totales }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="cerrarDetalle()">Cerrar</button>
+          @if (userLogeado) {
+            <button type="button" (click)="reservarActividad(actividadSeleccionada); cerrarDetalle()" class="btn btn-primary" [disabled]="actividadSeleccionada.plazas_ocupadas >= actividadSeleccionada.plazas_totales">
+              {{ actividadSeleccionada.plazas_ocupadas >= actividadSeleccionada.plazas_totales ? 'Completo' : 'Reservar Plaza' }}
+            </button>
+          } @else {
+            <a routerLink="/login" class="btn btn-primary">Iniciar sesión para reservar</a>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

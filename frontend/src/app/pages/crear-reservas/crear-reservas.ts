@@ -1,7 +1,8 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Reserva } from '../../services/reserva';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-crear-reservas',
@@ -11,105 +12,133 @@ import { Reserva } from '../../services/reserva';
   styleUrl: './crear-reservas.css',
 })
 export class CrearReservas implements OnInit {
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
+
+  todasLasActividades: any[] = [];
   actividades: any[] = [];
+  mensajeConfirmacion: string = '';
+  imagenSeleccionada: File | null = null;
+  provinciaFiltro: string = 'Todas';
+  textoBusqueda: string = '';
+  actividadSeleccionada: any = null;
 
   nuevaActividad: any = {
-    id: null,
     titulo: '',
     fecha: '',
-    estado: 'disponible',
+    provincia: '',
+    plazas_totales: ''
   };
 
   private reservaService = inject(Reserva);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   ngOnInit() {
+    const state = history.state as { mensaje?: string };
+    if (state?.mensaje) {
+      this.mensajeConfirmacion = state.mensaje;
+      setTimeout(() => this.mensajeConfirmacion = '', 5000);
+    }
     this.cargarActividades();
+  }
+
+  onImagenSeleccionada(event: any) {
+    if (event.target.files.length > 0) {
+      this.imagenSeleccionada = event.target.files[0];
+    }
   }
 
   cargarActividades() {
     this.reservaService.getActividades().subscribe({
       next: (data: any) => {
-        console.log(data);
-        this.actividades = data;
+        this.todasLasActividades = data;
+        this.aplicarFiltros();
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error(err);
-        alert('Error al cargar las actividades de la base de datos');
+        alert('Error al cargar las actividades');
       },
     });
+  }
+
+  filtrarPorProvincia(provincia: string) {
+    this.provinciaFiltro = provincia;
+    this.aplicarFiltros();
+  }
+
+  aplicarFiltros() {
+    let resultado = [...this.todasLasActividades];
+    if (this.provinciaFiltro !== 'Todas') {
+      resultado = resultado.filter(a => a.provincia === this.provinciaFiltro);
+    }
+    if (this.textoBusqueda.trim() !== '') {
+      resultado = resultado.filter(a =>
+        a.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase())
+      );
+    }
+    this.actividades = resultado;
+    this.cdr.detectChanges();
+  }
+
+  verDetalleActividad(actividad: any) {
+    this.actividadSeleccionada = actividad;
+    document.body.style.overflow = 'hidden';
+  }
+
+  cerrarDetalle() {
+    this.actividadSeleccionada = null;
+    document.body.style.overflow = 'auto';
   }
 
   guardarActividad(event: Event) {
     event.preventDefault();
 
-    const actividadData = {
-      titulo: this.nuevaActividad.titulo,
-      fecha: this.nuevaActividad.fecha,
-      estado: this.nuevaActividad.estado,
-    };
+    const formData = new FormData();
+    formData.append('titulo', this.nuevaActividad.titulo);
+    formData.append('fecha', this.nuevaActividad.fecha);
+    formData.append('provincia', this.nuevaActividad.provincia);
+    formData.append('plazas_totales', this.nuevaActividad.plazas_totales);
 
-    if (this.nuevaActividad.id === null) {
-      this.reservaService.crearActividad(this.nuevaActividad).subscribe({
-        next: (res) => {
-          alert('Actividad guardada correctamente');
-          this.limpiarFormulario();
-          this.cargarActividades();
-        },
-        error: (err) => {
-          console.error('Error al crear:', err);
-          alert('No se pudo crear la actividad. Revisa la consola.');
-        },
-      });
-    } else {
-      this.reservaService
-        .actualizarActividad(this.nuevaActividad.id, this.nuevaActividad)
-        .subscribe({
-          next: () => {
-            alert('Actividad editada correctamente');
-            this.limpiarFormulario();
-            this.cargarActividades();
-          },
-          error: (err) => {
-            console.error('Error al editar:', err);
-            alert('No se pudo actualizar la actividad');
-          },
-        });
+    if (this.imagenSeleccionada) {
+      formData.append('imagen', this.imagenSeleccionada);
     }
+
+    this.reservaService.crearActividad(formData).subscribe({
+      next: () => {
+        alert('Actividad creada correctamente');
+        this.limpiarFormulario();
+        this.cargarActividades();
+      },
+      error: (err) => console.error('Error al crear:', err),
+    });
   }
 
   eliminarActividad(id: number) {
-    const opcion = confirm('¿Seguro que quieres borrar esta actividad?');
-    if (opcion === true) {
+    if (confirm('¿Seguro que quieres borrar esta actividad?')) {
       this.reservaService.eliminarActividad(id).subscribe({
-        next: () => {
-          alert('Actividad borrada correctamente');
-          this.cargarActividades();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('No se pudo eliminar la actividad');
-        },
+        next: () => this.cargarActividades(),
+        error: (err) => console.error(err),
       });
     }
   }
 
-  cargarParaEditar(actividad: any) {
-    this.nuevaActividad = {
-      id: actividad.id,
-      titulo: actividad.titulo,
-      fecha: actividad.fecha,
-      estado: actividad.estado,
-    };
+  irAEditar(id: number) {
+    this.router.navigate(['/editar-actividad', id]);
   }
 
   limpiarFormulario() {
     this.nuevaActividad = {
-      id: null,
       titulo: '',
       fecha: '',
-      estado: 'disponible',
+      provincia: '',
+      plazas_totales: ''
     };
+    this.imagenSeleccionada = null;
+    
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 }

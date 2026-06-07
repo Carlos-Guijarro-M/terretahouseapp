@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
@@ -11,52 +11,51 @@ import { Auth } from '../../services/auth';
   styleUrl: './register.css',
 })
 export class Register {
-
   formData = {
     email: '',
     password: '',
-    confirmarPassword: ''
+    confirmarPassword: '',
+    nombre: '',
+    apellidos: ''
   };
   
+  archivoSeleccionado: File | null = null;
   error: string = '';
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
+
+  onFileSelected(event: any) {
+    if (event.target.files.length > 0) {
+      this.archivoSeleccionado = event.target.files[0];
+    }
+  }
 
   register() {
     this.error = '';
-
-    if (this.formData.email === '') {
-      this.error = 'El email es obligatorio';
-      return;
-    }
-
-    if (this.formData.password === '') {
-      this.error = 'La contraseña es obligatoria';
-      return;
-    }
-
-    if (this.formData.confirmarPassword === '') {
-      this.error = 'Debes confirmar la contraseña';
-      return;
-    }
 
     if (this.formData.password !== this.formData.confirmarPassword) {
       this.error = 'Las contraseñas no coinciden';
       return;
     }
 
-    const datosRegistro = {
-      email: this.formData.email,
-      password: this.formData.password
-    };
+    const formData = new FormData();
+    formData.append('email', this.formData.email);
+    formData.append('password', this.formData.password);
+    formData.append('nombre', this.formData.nombre);
+    formData.append('apellidos', this.formData.apellidos);
+    
+    if (this.archivoSeleccionado) {
+      formData.append('foto', this.archivoSeleccionado);
+    }
 
-    this.auth.register(datosRegistro).subscribe({
+    this.auth.register(formData).subscribe({
       next: () => {
         alert('Registro exitoso. Ahora puedes iniciar sesión.');
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.error = 'No se ha podido completar el registro.';
+        this.error = err.error?.message || 'Error desconocido';
+        this.cdr.detectChanges(); 
       }
     });
   }

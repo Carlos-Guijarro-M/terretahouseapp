@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { CommonModule } from '@angular/common';
@@ -10,23 +10,32 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
-export class Header {
+export class Header implements OnInit {
   menuAbierto: boolean = false;
   isMenuCollapsed: boolean = true;
+  usuarioActual: any = null;
 
   constructor(public auth: Auth, private router: Router) {}
 
-  comprobarLogueado(): boolean {
-    return this.auth.getUser() !== null;
+  ngOnInit() {
+    this.auth.getUserObservable().subscribe(user => {
+      this.usuarioActual = user;
+    });
   }
 
-  obtenerEmail(): string {
-    return this.auth.getUser()?.email || '';
+  comprobarLogueado(): boolean {
+    return this.usuarioActual !== null;
+  }
+
+  obtenerFoto(): string {
+    if (this.usuarioActual?.foto) {
+      return `http://localhost:8000/uploads/perfiles/${this.usuarioActual.foto}`;
+    }
+    return `https://ui-avatars.com/api/?name=${this.usuarioActual?.nombre || 'U'}&background=A0685D&color=fff&size=30`;
   }
 
   comprobarAdmin(): boolean {
-    const usuario = this.auth.getUser();
-    return usuario?.roles?.includes('ROLE_ADMIN') || false;
+    return this.usuarioActual?.roles?.includes('ROLE_ADMIN') || false;
   }
 
   conmutarMenu() {
@@ -41,12 +50,8 @@ export class Header {
   logout() {
     this.cerrarMenu();
     this.auth.logout().subscribe({
-      next: () => {
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        this.router.navigate(['/login']);
-      }
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
     });
   }
 }

@@ -9,6 +9,14 @@ import { Contacto } from './pages/contacto/contacto';
 import { Admin } from './pages/admin/admin';
 import { MisReservas } from './pages/mis-reservas/mis-reservas';
 import { CrearReservas } from './pages/crear-reservas/crear-reservas';
+import { EditarActividad } from './pages/editar-actividad/editar-actividad';
+import { EditarPerfil } from './pages/editar-perfil/editar-perfil';
+import { GestionUsuarios } from './pages/gestion-usuarios/gestion-usuarios';
+import { RecuperarPassword } from './pages/recuperar-password/recuperar-password';
+import { ResetearPassword } from './pages/resetear-password/resetear-password';
+import { AvisoLegal } from './pages/aviso-legal/aviso-legal';
+import { PoliticaPrivacidad } from './pages/politica-privacidad/politica-privacidad';
+import { Cookies } from './pages/cookies/cookies';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -19,5 +27,13 @@ export const routes: Routes = [
   { path: 'contacto', component: Contacto },
   { path: 'admin', component: Admin },
   { path: 'mis-reservas', component: MisReservas },
-  { path: 'crear-reservas', component: CrearReservas }
+  { path: 'crear-reservas', component: CrearReservas },
+  { path: 'editar-actividad/:id', component: EditarActividad },
+  { path: 'editar-perfil', component: EditarPerfil },
+  { path: 'gestion-usuarios', component: GestionUsuarios },
+  { path: 'recuperar-password', component: RecuperarPassword },
+  { path: 'resetear-password', component: ResetearPassword },
+  { path: 'aviso-legal', component: AvisoLegal },
+  { path: 'politica-privacidad', component: PoliticaPrivacidad },
+  { path: 'cookies', component: Cookies }
 ];

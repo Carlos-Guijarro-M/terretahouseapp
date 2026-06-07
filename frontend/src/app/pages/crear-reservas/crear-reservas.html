@@ -1,44 +1,60 @@
 <div class="gestion-actividades">
-  <header class="hero d-flex align-items-center justify-content-center text-white text-center"
-          style="height: 200px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/hero1-home.jpg') center/cover;">
+  <header class="hero d-flex align-items-center justify-content-center text-white text-center" style="height: 200px; background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/hero1-home.jpg') center/cover;">
     <h1>Panel de Administración</h1>
   </header>
 
   <main class="container py-5">
+
     <section class="card p-4 shadow-sm mb-5">
-      <h2 class="text-primary mb-4">
-        {{ nuevaActividad.id === null ? 'Crear Nueva Actividad' : 'Modificando Actividad: ' + nuevaActividad.id }}
-      </h2>
-      
+      <h2 class="text-primary mb-4">Crear Nueva Actividad</h2>
       <form (submit)="guardarActividad($event)" class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <label class="form-label fw-bold">Título</label>
-          <input type="text" class="form-control" [(ngModel)]="nuevaActividad.titulo" name="titulo" required>
+          <input type="text" class="form-control" [(ngModel)]="nuevaActividad.titulo" name="titulo" required />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Provincia</label>
+          <select class="form-select" [(ngModel)]="nuevaActividad.provincia" name="provincia" required>
+            <option value="" disabled selected>Selecciona una provincia</option>
+            <option value="Valencia">Valencia</option>
+            <option value="Castellón">Castellón</option>
+            <option value="Alicante">Alicante</option>
+          </select>
         </div>
         <div class="col-md-3">
           <label class="form-label fw-bold">Fecha</label>
-          <input type="date" class="form-control" [(ngModel)]="nuevaActividad.fecha" name="fecha" required>
+          <input type="date" class="form-control" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
         </div>
         <div class="col-md-3">
-          <label class="form-label fw-bold">Estado</label>
-          <select class="form-select" [(ngModel)]="nuevaActividad.estado" name="estado">
-            <option value="disponible">Disponible</option>
-            <option value="completo">Completo</option>
-          </select>
+          <label class="form-label fw-bold">Plazas Totales</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevaActividad.plazas_totales" name="plazas_totales" min="1" required />
         </div>
-        <div class="col-md-2 d-flex align-items-end">
+        <div class="col-md-6">
+          <label class="form-label fw-bold">Imagen de la Actividad</label>
+          <input type="file" class="form-control" (change)="onImagenSeleccionada($event)" accept="image/*" #fileInput />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
           <button type="submit" class="btn btn-success w-100">Guardar</button>
         </div>
-        @if (nuevaActividad.id !== null) {
-          <div class="col-12">
-            <button type="button" class="btn btn-outline-danger" (click)="limpiarFormulario()">Cancelar Edición</button>
-          </div>
-        }
       </form>
     </section>
 
+    @if (mensajeConfirmacion) {
+      <div class="alert alert-success text-center mb-3">
+        <h2>{{ mensajeConfirmacion }}</h2>
+      </div>
+    }
+
     <section class="card p-4 shadow-sm">
       <h2 class="text-primary mb-4">Listado de Actividades</h2>
+
+      <div class="text-center mb-3">
+        <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Todas'" (click)="filtrarPorProvincia('Todas')">Todas</button>
+        <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Valencia'" (click)="filtrarPorProvincia('Valencia')">Valencia</button>
+        <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Castellón'" (click)="filtrarPorProvincia('Castellón')">Castellón</button>
+        <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Alicante'" (click)="filtrarPorProvincia('Alicante')">Alicante</button>
+      </div>
+
       @if (actividades.length === 0) {
         <p class="text-center text-muted">No hay actividades creadas.</p>
       } @else {
@@ -46,7 +62,13 @@
           <table class="table table-hover align-middle">
             <thead class="table-dark">
               <tr>
-                <th>ID</th><th>Título</th><th>Fecha</th><th>Estado</th><th>Acciones</th>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Provincia</th>
+                <th>Fecha</th>
+                <th>Plazas</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -54,16 +76,21 @@
                 <tr>
                   <td><strong>{{ act.id }}</strong></td>
                   <td>{{ act.titulo }}</td>
+                  <td>{{ act.provincia }}</td>
                   <td>{{ act.fecha }}</td>
+                  <td>{{ act.plazas_ocupadas || 0 }}/{{ act.plazas_totales }}</td>
                   <td>
-                    <span class="badge" [ngClass]="act.estado === 'Abierta' ? 'bg-success' : 'bg-warning text-dark'">
-                      {{ act.estado }}
-                    </span>
+                    @if (act.imagen_url) {
+                      <img [src]="act.imagen_url" alt="Miniatura" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px" />
+                    } @else {
+                      <span class="text-muted small">Sin imagen</span>
+                    }
                   </td>
                   <td>
                     <div class="btn-group btn-group-sm">
-                      <button class="btn btn-outline-primary" (click)="cargarParaEditar(act)">Editar</button>
+                      <button class="btn btn-outline-primary" (click)="irAEditar(act.id)">Editar</button>
                       <button class="btn btn-outline-danger" (click)="eliminarActividad(act.id)">Borrar</button>
+                      <button class="btn btn-outline-secondary" (click)="verDetalleActividad(act)">Vista Previa</button>
                     </div>
                   </td>
                 </tr>
@@ -75,3 +102,22 @@
     </section>
   </main>
 </div>
+
+@if (actividadSeleccionada) {
+  <div class="modal d-block" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">{{ actividadSeleccionada.titulo }}</h5>
+          <button type="button" class="btn-close" (click)="cerrarDetalle()"></button>
+        </div>
+        <div class="modal-body">
+          <img [src]="actividadSeleccionada.imagen_url || '/placeholder-image.jpg'" class="w-100 mb-3" style="height: 300px; object-fit: cover; border-radius: 8px;">
+          <p><strong>Provincia:</strong> {{ actividadSeleccionada.provincia }}</p>
+          <p><strong>Fecha:</strong> {{ actividadSeleccionada.fecha }}</p>
+          <p><strong>Plazas:</strong> {{ actividadSeleccionada.plazas_ocupadas || 0 }}/{{ actividadSeleccionada.plazas_totales }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+}

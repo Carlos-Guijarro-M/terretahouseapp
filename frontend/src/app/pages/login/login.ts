@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ export class Login {
   
   error: string = '';
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
   login() {
     this.error = '';
@@ -30,10 +30,15 @@ export class Login {
     this.auth.login(this.formData).subscribe({
       next: (res: any) => {
         this.auth.setUser(res);
+        if(res.roles?.includes('ROLE_ADMIN')) {
+          this.router.navigate(['/crear-reservas']);
+        } else {
         this.router.navigate(['/']);
+        }
       },
-      error: () => {
-        this.error = 'Email o contraseña incorrectos';
+      error: (err) => {
+        this.error = err.error?.message || 'Email o contraseña incorrectos';
+        this.cdr.detectChanges();
       }
     });
   }

@@ -1,10 +1,9 @@
 <div class="register-container d-flex justify-content-center align-items-center min-vh-100 p-3" style="background-color: #F6F1EC;">
-  
   <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
     <div class="card-body">
       <h2 class="text-center text-primary mb-4 fw-bold">Crear cuenta</h2>
 
-      <form (submit)="register()">
+      <form (ngSubmit)="register()">
         <div class="mb-3">
           <label for="email" class="form-label fw-bold">Email</label>
           <input type="email" id="email" class="form-control" [(ngModel)]="formData.email" name="email" placeholder="Introduce tu email" required>
@@ -14,10 +13,23 @@
           <label for="password" class="form-label fw-bold">Contraseña</label>
           <input type="password" id="password" class="form-control" [(ngModel)]="formData.password" name="password" placeholder="Introduce tu contraseña" required>
         </div>
-
         <div class="mb-3">
           <label for="confirmarPassword" class="form-label fw-bold">Confirmar contraseña</label>
           <input type="password" id="confirmarPassword" class="form-control" [(ngModel)]="formData.confirmarPassword" name="confirmarPassword" placeholder="Repite tu contraseña" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="nombre" class="form-label fw-bold">Nombre</label>
+          <input type="text" id="nombre" class="form-control" [(ngModel)]="formData.nombre" name="nombre" placeholder="Nombre" required>
+        </div>
+        <div class="mb-3">
+          <label for="apellidos" class="form-label fw-bold">Apellidos</label>
+          <input type="text" id="apellidos" class="form-control" [(ngModel)]="formData.apellidos" name="apellidos" placeholder="Apellidos" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Foto de perfil</label>
+          <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
         </div>
 
         @if (error !== '') {
@@ -26,13 +38,12 @@
           </div>
         }
         
-        <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Registrarme</button>
-
+        <button type="button" class="btn btn-primary w-100 py-2 mt-2" (click)="register()">Registrarme</button>
+        
         <p class="text-center mt-3 small text-muted">
           ¿Ya tienes cuenta? <a routerLink="/login" class="text-primary fw-bold text-decoration-none">Inicia sesión</a>
         </p>
       </form>
     </div>
   </div>
-
 </div>
