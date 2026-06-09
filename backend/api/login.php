@@ -10,6 +10,19 @@ require_once '../includes/db.php';
 $data = json_decode(file_get_contents("php://input"), true);
 $email = $data['email'] ?? '';
 $password = $data['password'] ?? '';
+$recaptchaToken = $data['recaptcha_token'] ?? '';
+
+$secret = '6LcEpxMtAAAAAJbq5T6_waCOTsrXFYikAQLZUdV6';
+$url = "https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$recaptchaToken}";
+
+$verify = file_get_contents($url);
+$captchaResponse = json_decode($verify);
+
+if (!$captchaResponse->success) {
+    http_response_code(400);
+    echo json_encode(['message' => 'Error de validación: Por favor, verifica el CAPTCHA.']);
+    exit;
+}
 
 $stmt = $conn->prepare("
     SELECT u.*, GROUP_CONCAT(r.nombre) as roles 
@@ -32,8 +45,9 @@ if ($user && password_verify($password, $user['password'])) {
 
     if (empty($user['api_token'])) {
         $nuevoToken = "token_" . uniqid();
-        $update = $conn->prepare("UPDATE user SET api_token = ? WHERE id = ?");
-        $update->bind_param("si", $nuevoToken, $user['id']);
+        $expira = date('Y-m-d H:i:s', strtotime('+2 hours'));
+        $update = $conn->prepare("UPDATE user SET api_token = ?, token_expira = ? WHERE id = ?");
+        $update->bind_param("ssi", $nuevoToken, $expira, $user['id']);
         $update->execute();
         $user['api_token'] = $nuevoToken;
     }

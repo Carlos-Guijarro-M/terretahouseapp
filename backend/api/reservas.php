@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:4200");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Authorization, Content-Type");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
@@ -13,7 +13,16 @@ require_once 'auth_check.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    $stmt = $conn->prepare("SELECT r.*, a.provincia, a.imagen_url, a.plazas_totales, (SELECT COUNT(*) FROM reserva WHERE actividad_id = a.id) as plazas_ocupadas FROM reserva r JOIN actividad a ON r.actividad_id = a.id WHERE r.user_id = ?");
+    $stmt = $conn->prepare("
+        SELECT r.id, r.user_id, r.actividad_id,
+               DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha,
+               a.titulo, a.provincia, a.imagen_url, a.plazas_totales, 
+               a.hora_inicio, a.descripcion,
+               (SELECT COUNT(*) FROM reserva WHERE actividad_id = a.id) as plazas_ocupadas
+        FROM reserva r
+        JOIN actividad a ON r.actividad_id = a.id
+        WHERE r.user_id = ?
+    ");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -39,12 +48,12 @@ elseif ($method === 'POST') {
 
     if ($info && $info['ocupadas'] >= $info['plazas_totales']) {
         http_response_code(400);
-        echo json_encode(['message' => 'No quedan plazas disponibles para esta actividad']);
+        echo json_encode(['message' => 'No quedan plazas disponibles']);
         exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO reserva (titulo, user_id, actividad_id, estado, fecha) VALUES (?, ?, ?, 'pendiente', ?)");
-    $stmt->bind_param("siis", $data['titulo'], $userId, $data['actividadId'], $data['fecha']);
+    $stmt = $conn->prepare("INSERT INTO reserva (user_id, actividad_id) VALUES (?, ?)");
+    $stmt->bind_param("ii", $userId, $data['actividadId']);
 
     if ($stmt->execute()) {
         echo json_encode(['message' => 'Reserva creada con éxito']);
@@ -54,24 +63,8 @@ elseif ($method === 'POST') {
     }
 }
 
-elseif ($method === 'PUT') {
-    $id = $_GET['id'];
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    $stmt = $conn->prepare("UPDATE reserva SET titulo = ?, fecha = ? WHERE id = ? AND user_id = ?");
-    $stmt->bind_param("ssii", $data['titulo'], $data['fecha'], $id, $userId);
-
-    if ($stmt->execute()) {
-        echo json_encode(['message' => 'Reserva actualizada']);
-    } else {
-        http_response_code(500);
-        echo json_encode(['message' => 'Error al actualizar']);
-    }
-}
-
 elseif ($method === 'DELETE') {
     $id = $_GET['id'];
-
     $stmt = $conn->prepare("DELETE FROM reserva WHERE id = ? AND user_id = ?");
     $stmt->bind_param("ii", $id, $userId);
 

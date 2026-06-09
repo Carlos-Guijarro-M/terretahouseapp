@@ -23,6 +23,22 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     header("Content-Type: application/json");
+
+    if (isset($_GET['user_id'])) {
+        $user_id = $_GET['user_id'];
+        $stmt = $conn->prepare("
+            SELECT r.id, r.titulo, DATE_FORMAT(r.fecha, '%d/%m/%Y') as fecha, a.provincia, a.imagen_url,
+            a.fecha_actividad, a.hora_inicio
+            FROM reserva r
+            JOIN actividad a ON r.actividad_id = a.id
+            WHERE r.user_id = ?
+        ");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        echo json_encode($stmt->get_result()->fetch_all(MYSQLI_ASSOC));
+        exit;
+    }
+
     $result = $conn->query("
         SELECT u.id, u.nombre, u.apellidos, u.email, u.foto, u.baneado,
                GROUP_CONCAT(r.nombre) as roles
@@ -57,6 +73,20 @@ if ($method === 'POST') {
     } else {
         http_response_code(500);
         echo json_encode(['message' => 'Error al actualizar el usuario']);
+    }
+    exit;
+}
+
+if ($method === 'DELETE' && isset($_GET['reserva_id'])) {
+    $reserva_id = $_GET['reserva_id'];
+    $stmt = $conn->prepare("DELETE FROM reserva WHERE id = ?");
+    $stmt->bind_param("i", $reserva_id);
+    header("Content-Type: application/json");
+    if ($stmt->execute()) {
+        echo json_encode(['message' => 'Reserva eliminada']);
+    } else {
+        http_response_code(500);
+        echo json_encode(['message' => 'Error al eliminar la reserva']);
     }
     exit;
 }

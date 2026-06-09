@@ -17,7 +17,7 @@ if (empty($email)) {
     exit;
 }
 
-$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
+$stmt = $conn->prepare("SELECT id, baneado FROM user WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -25,6 +25,12 @@ $user = $stmt->get_result()->fetch_assoc();
 if (!$user) {
     http_response_code(404);
     echo json_encode(['status' => 'error', 'message' => 'No existe ninguna cuenta con ese email']);
+    exit;
+}
+
+if ($user['baneado'] == 1) {
+    http_response_code(403);
+    echo json_encode(['status' => 'error', 'message' => 'Esta cuenta está baneada y no puede recuperar la contraseña']);
     exit;
 }
 

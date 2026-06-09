@@ -10,7 +10,7 @@ if (!isset($headers['Authorization'])) {
 $token = str_replace('Bearer ', '', $headers['Authorization']);
 
 $consulta = $conn->prepare("
-    SELECT u.id, u.baneado, GROUP_CONCAT(r.nombre) as roles 
+    SELECT u.id, u.baneado, u.token_expira, GROUP_CONCAT(r.nombre) as roles 
     FROM user u
     LEFT JOIN user_roles ur ON u.id = ur.user_id
     LEFT JOIN roles r ON ur.role_id = r.id
@@ -29,6 +29,15 @@ if (!$usuario) {
 if ($usuario['baneado']) {
     http_response_code(403);
     echo json_encode(['message' => 'Usuario baneado']);
+    exit;
+}
+
+if ($usuario['token_expira'] && strtotime($usuario['token_expira']) < time()) {
+    $limpiar = $conn->prepare("UPDATE user SET api_token = NULL, token_expira = NULL WHERE id = ?");
+    $limpiar->bind_param("i", $usuario['id']);
+    $limpiar->execute();
+    http_response_code(401);
+    echo json_encode(['message' => 'Sesión expirada']);
     exit;
 }
 

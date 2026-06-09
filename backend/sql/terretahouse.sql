@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS user (
     password VARCHAR(255) NOT NULL,
     foto VARCHAR(255) DEFAULT NULL,
     api_token VARCHAR(255) DEFAULT NULL,
+    token_expira DATETIME DEFAULT NULL,
     baneado TINYINT(1) DEFAULT 0,
     reset_token VARCHAR(255) DEFAULT NULL,
     reset_token_expira DATETIME DEFAULT NULL
@@ -30,20 +31,21 @@ CREATE TABLE IF NOT EXISTS user_roles (
 CREATE TABLE IF NOT EXISTS actividad (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
-    fecha DATETIME NOT NULL,
-    estado VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    fecha_actividad DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
     provincia VARCHAR(100) NOT NULL,
     imagen_url VARCHAR(255),
-    plazas_totales INT NOT NULL DEFAULT 0
+    plazas_totales INT NOT NULL DEFAULT 0,
+    mapa_iframe TEXT
 );
 
 CREATE TABLE IF NOT EXISTS reserva (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    fecha DATETIME NOT NULL,
-    estado VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
     actividad_id INT NOT NULL,
+    fecha_reserva DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_reserva_user FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT fk_reserva_actividad FOREIGN KEY (actividad_id) REFERENCES actividad(id) ON DELETE CASCADE
 );

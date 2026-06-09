@@ -11,6 +11,18 @@ $email = $_POST['email'] ?? '';
 $nombre = $_POST['nombre'] ?? '';
 $apellidos = $_POST['apellidos'] ?? '';
 $password = $_POST['password'] ?? '';
+$recaptchaToken = $_POST['recaptcha_token'] ?? '';
+
+$secret = '6LcEpxMtAAAAAJbq5T6_waCOTsrXFYikAQLZUdV6'; 
+$url = "https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$recaptchaToken}";
+$verify = file_get_contents($url);
+$captchaResponse = json_decode($verify);
+
+if (!$captchaResponse->success) {
+    http_response_code(400);
+    echo json_encode(['message' => 'Error de validación del CAPTCHA.']);
+    exit;
+}
 
 if (empty($email) || empty($password) || empty($nombre) || empty($apellidos)) {
     http_response_code(400);
