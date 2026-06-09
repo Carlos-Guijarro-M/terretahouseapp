@@ -32,6 +32,10 @@
           <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
         </div>
 
+        <div class="mb-3 d-flex justify-content-center">
+          <re-captcha (resolved)="resolved($event)"></re-captcha>
+        </div>
+
         @if (error !== '') {
           <div class="alert alert-danger p-2 text-center small fw-bold">
             {{ error }}

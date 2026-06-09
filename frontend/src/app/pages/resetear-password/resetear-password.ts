@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 export class ResetearPassword {
   token: string = '';
   passwordNueva: string = '';
+  passwordConfirmar: string = '';
   error: string = '';
   exito: string = '';
 
@@ -23,8 +24,13 @@ export class ResetearPassword {
     this.error = '';
     this.exito = '';
 
-    if (!this.token || !this.passwordNueva) {
+    if (!this.token || !this.passwordNueva || !this.passwordConfirmar) {
       this.error = 'Por favor rellena todos los campos.';
+      return;
+    }
+
+    if (this.passwordNueva !== this.passwordConfirmar) {
+      this.error = 'Las contraseñas no coinciden.';
       return;
     }
 

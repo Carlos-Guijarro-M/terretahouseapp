@@ -1,8 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
-.btn-primary {
-    background-color: #A0685D !important;
-    border-color: #A0685D !important;
+:root {
+  --color-verde-bosque: #2e7d32;
+  --color-naranja-valencia: #e65100;
+  --color-naranja-citrico: #f57c00;
+  --color-azul-mediterraneo: #0277bd;
+  --color-carbon: #263238;
+  --color-blanco: #ffffff;
+  --color-header-bg: #2e7d32ac; 
+  --color-header-text: #263238;
 }
+
+.logo-app {
+  display: block;
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.header-logo {
+  max-height: 90px !important;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.footer-logo {
+  max-height: 80px;
+  opacity: 0.8;
+}
+
+.btn-primary {
+  background-color: var(--color-naranja-valencia) !important;
+  border-color: var(--color-naranja-valencia) !important;
+}
+
 .text-primary {
-    color: #A0685D !important;
+  color: var(--color-verde-bosque) !important;
+}
+
+.pagination .page-link {
+  background-color: transparent !important;
+  border: none !important;
+  color: var(--color-carbon) !important;
+  box-shadow: none !important;
+}
+
+.pagination .page-item.active .page-link {
+  color: var(--color-naranja-valencia) !important;
+  font-weight: bold;
+  text-decoration: underline;
 }

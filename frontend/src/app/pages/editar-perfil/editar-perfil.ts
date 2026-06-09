@@ -11,7 +11,7 @@ import { Auth } from '../../services/auth';
   styleUrl: './editar-perfil.css'
 })
 export class EditarPerfil implements OnInit {
-  usuario = { id: '', nombre: '', email: '', password_actual: '', password_nueva: '' };
+  usuario = { id: '', nombre: '', email: '', password_actual: '', password_nueva: '', password_confirmar: '' };
   archivoSeleccionado: File | null = null;
 
   constructor(private auth: Auth) {}
@@ -32,13 +32,19 @@ export class EditarPerfil implements OnInit {
   }
 
   guardar() {
-    if (!this.usuario.password_actual) {
-      alert('Debes ingresar tu contraseña actual para realizar cambios.');
-      return;
-    }
-    if (this.usuario.password_nueva && this.usuario.password_nueva.length < 3) {
-      alert('La nueva contraseña debe tener al menos 3 caracteres.');
-      return;
+    if (this.usuario.password_nueva || this.usuario.password_confirmar) {
+      if (!this.usuario.password_actual) {
+        alert('Debes ingresar tu contraseña actual para realizar cambios de seguridad.');
+        return;
+      }
+      if (this.usuario.password_nueva !== this.usuario.password_confirmar) {
+        alert('Las nuevas contraseñas no coinciden.');
+        return;
+      }
+      if (this.usuario.password_nueva.length < 3) {
+        alert('La nueva contraseña debe tener al menos 3 caracteres.');
+        return;
+      }
     }
 
     const formData = new FormData();

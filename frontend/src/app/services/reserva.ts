@@ -40,6 +40,14 @@ export class Reserva {
     return this.http.delete(`${this.urlActividades}?id=${id}`, { headers: this.getAuthHeaders() });
   }
 
+  getUsuariosActividad(actividadId: number) {
+    return this.http.get(`${this.urlActividades}?actividad_id=${actividadId}`, { headers: this.getAuthHeaders() });
+  }
+
+  eliminarReservaDeActividad(reservaId: number) {
+    return this.http.delete(`${this.urlActividades}?reserva_id=${reservaId}`, { headers: this.getAuthHeaders() });
+  }
+
   private getToken(): string {
     const userStorage = localStorage.getItem('user');
     if (userStorage) {

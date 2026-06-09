@@ -20,6 +20,10 @@
             {{ error }}
           </div>
         }
+
+        <div class="mb-3 d-flex justify-content-center">
+          <re-captcha (resolved)="resolved($event)"></re-captcha>
+        </div>
         
         <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Entrar</button>
         <p class="text-center mt-2 small text-muted">

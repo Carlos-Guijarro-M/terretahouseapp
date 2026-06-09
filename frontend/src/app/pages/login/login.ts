@@ -2,25 +2,36 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, RecaptchaModule],
   templateUrl: './login.html',
 })
 export class Login {
   formData = {
     email: '',
-    password: ''
+    password: '',
+    recaptcha_token: ''
   };
   
   error: string = '';
 
   constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
+  resolved(token: string | null) {
+    this.formData.recaptcha_token = token || '';
+  }
+
   login() {
     this.error = '';
+
+    if (!this.formData.recaptcha_token) {
+      this.error = 'Por favor, completa el CAPTCHA.';
+      return;
+    }
 
     if (!this.formData.email || !this.formData.password) {
       this.error = 'Por favor, rellena todos los campos';

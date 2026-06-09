@@ -1,16 +1,37 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Pagination } from '../../components/pagination/pagination';
 
 @Component({
   selector: 'app-gestion-usuarios',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './gestion-usuarios.html',
   styleUrl: './gestion-usuarios.css',
 })
 export class GestionUsuarios implements OnInit {
+  todosLosUsuarios: any[] = [];
   usuarios: any[] = [];
+  textoBusqueda: string = '';
+  filtroEstado: string = 'Todos';
+  usuarioSeleccionado: any = null;
+  reservasUsuario: any[] = [];
+
+  // Paginación
+  elementosPorPagina: number = 2;
+  paginaActual: number = 1;
+
+  get usuariosPaginados() {
+    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
+    return this.usuarios.slice(inicio, inicio + this.elementosPorPagina);
+  }
+
+  get totalPaginas() {
+    return Math.ceil(this.usuarios.length / this.elementosPorPagina);
+  }
+
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private apiUrl = 'http://localhost:8000/api/usuarios.php';
@@ -29,26 +50,44 @@ export class GestionUsuarios implements OnInit {
   }
 
   cargarUsuarios() {
-  this.http.get<any[]>(this.apiUrl, { headers: this.getHeaders() }).subscribe({
-    next: (data) => {
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const adminId = user.id;
+    this.http.get<any[]>(this.apiUrl, { headers: this.getHeaders() }).subscribe({
+      next: (data) => {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const adminId = user.id;
+        this.todosLosUsuarios = (Array.isArray(data) ? data : []).filter(u => Number(u.id) !== Number(adminId));
+        this.aplicarFiltros();
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error cargando usuarios', err)
+    });
+  }
 
-      this.usuarios = (Array.isArray(data) ? data : []).filter(u => Number(u.id) !== Number(adminId));      
-      this.cdr.detectChanges();
+  aplicarFiltros() {
+    let resultado = [...this.todosLosUsuarios];
 
-    },
-    error: (err) => console.error('Error cargando usuarios', err)
-  });
-}
+    if (this.filtroEstado === 'Activo') {
+      resultado = resultado.filter(u => u.baneado == 0);
+    } else if (this.filtroEstado === 'Baneado') {
+      resultado = resultado.filter(u => u.baneado == 1);
+    }
+
+    if (this.textoBusqueda.trim() !== '') {
+      resultado = resultado.filter(u =>
+        u.nombre.toLowerCase().includes(this.textoBusqueda.toLowerCase())
+      );
+    }
+
+    this.usuarios = resultado;
+    this.paginaActual = 1;
+    this.cdr.detectChanges();
+  }
 
   cambiarEstadoBaneo(usuario: any) {
     const nuevoEstado = usuario.baneado == 1 ? 0 : 1;
-    this.http.post(this.apiUrl, { id: usuario.id, baneado: nuevoEstado }, { headers: this.getHeaders() })
-    .subscribe({
+    this.http.post(this.apiUrl, { id: usuario.id, baneado: nuevoEstado }, { headers: this.getHeaders() }).subscribe({
       next: () => {
         usuario.baneado = nuevoEstado;
-        this.cdr.detectChanges();
+        this.aplicarFiltros();
         alert(nuevoEstado ? 'Usuario baneado' : 'Usuario desbaneado');
       },
       error: (err) => console.error(err)
@@ -59,6 +98,40 @@ export class GestionUsuarios implements OnInit {
     if (confirm('¿Estás seguro de eliminar este usuario permanentemente?')) {
       this.http.delete(`${this.apiUrl}?id=${id}`, { headers: this.getHeaders() }).subscribe({
         next: () => this.cargarUsuarios(),
+        error: (err) => console.error(err)
+      });
+    }
+  }
+
+  verReservas(usuario: any) {
+    this.usuarioSeleccionado = usuario;
+    this.reservasUsuario = [];
+    document.body.style.overflow = 'hidden';
+
+    this.http.get<any[]>(`${this.apiUrl}?user_id=${usuario.id}`, { headers: this.getHeaders() }).subscribe({
+      next: (data) => {
+        setTimeout(() => {
+          this.reservasUsuario = data;
+          this.cdr.detectChanges();
+        }, 100);
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  cerrarModal() {
+    this.usuarioSeleccionado = null;
+    this.reservasUsuario = [];
+    document.body.style.overflow = '';
+  }
+
+  eliminarReservaDeUsuario(reservaId: number) {
+    if (confirm('¿Seguro que quieres eliminar esta reserva?')) {
+      this.http.delete(`${this.apiUrl}?reserva_id=${reservaId}`, { headers: this.getHeaders() }).subscribe({
+        next: () => {
+          this.reservasUsuario = this.reservasUsuario.filter(r => r.id !== reservaId);
+          this.cdr.detectChanges();
+        },
         error: (err) => console.error(err)
       });
     }

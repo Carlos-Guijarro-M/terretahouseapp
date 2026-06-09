@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -39,9 +39,17 @@ export class Auth {
   }
 
   logout() {
+    const user = this.getUser();
+    const token = user ? user.api_token : null;
+
+    const headers = new HttpHeaders({
+      'Authorization': 'Bearer ' + (token || '')
+    });
+
     this.currentUser$.next(null);
     localStorage.removeItem('user');
-    return this.http.post(`${this.url}/logout.php`, {});
+
+    return this.http.post(`${this.url}/logout.php`, {}, { headers });
   }
 
   private loadUserFromStorage() {

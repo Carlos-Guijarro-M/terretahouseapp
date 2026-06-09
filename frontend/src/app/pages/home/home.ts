@@ -7,11 +7,13 @@ import { HeroCarousel } from '../../components/hero-carousel/hero-carousel';
 import { App } from '../../app';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { SafeHtmlPipe } from '../../pipes/safe-html-pipe';
+import { Pagination } from '../../components/pagination/pagination';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HeroCarousel, FormsModule, RouterLink],
+  imports: [CommonModule, HeroCarousel, FormsModule, RouterLink, SafeHtmlPipe, Pagination],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -24,6 +26,12 @@ export class Home implements OnInit {
   userLogeado: boolean = false;
   textoBusqueda: string = '';
   actividadSeleccionada: any = null;
+  esReservaActiva: boolean = false;
+
+  // Paginación
+  elementosPorPagina: number = 3;
+  paginaActualActividades: number = 1;
+  paginaActualReservas: number = 1;
 
   constructor(
     public app: App,
@@ -37,8 +45,9 @@ export class Home implements OnInit {
         ? this.todasLasActividades
         : this.todasLasActividades.filter((a) => a.provincia === this.provinciaFiltro);
 
-    return filtradas.filter((a) => !this.yaReservada(a.id))
-    .filter((a) => a.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase()));
+    return filtradas
+      .filter((a) => !this.yaReservada(a.id))
+      .filter((a) => a.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase()));
   }
 
   get misReservasFiltradas() {
@@ -46,6 +55,32 @@ export class Home implements OnInit {
         ? this.misReservas
         : this.misReservas.filter(r => r.provincia === this.provinciaFiltro);
     return filtradas.filter((r) => r.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase()));
+  }
+
+  get actividadesPaginadas() {
+    const inicio = (this.paginaActualActividades - 1) * this.elementosPorPagina;
+    return this.actividadesDisponibles.slice(inicio, inicio + this.elementosPorPagina);
+  }
+
+  get reservasPaginadas() {
+    const inicio = (this.paginaActualReservas - 1) * this.elementosPorPagina;
+    return this.misReservasFiltradas.slice(inicio, inicio + this.elementosPorPagina);
+  }
+
+  get totalPaginasActividades() {
+    return Math.ceil(this.actividadesDisponibles.length / this.elementosPorPagina);
+  }
+
+  get totalPaginasReservas() {
+    return Math.ceil(this.misReservasFiltradas.length / this.elementosPorPagina);
+  }
+
+  get paginasActividades() {
+    return Array.from({ length: this.totalPaginasActividades }, (_, i) => i + 1);
+  }
+
+  get paginasReservas() {
+    return Array.from({ length: this.totalPaginasReservas }, (_, i) => i + 1);
   }
 
   ngOnInit() {
@@ -82,10 +117,13 @@ export class Home implements OnInit {
               provincia: act?.provincia || 'Sin provincia',
               plazas_ocupadas: res.plazas_ocupadas || act?.plazas_ocupadas || 0,
               plazas_totales: res.plazas_totales || act?.plazas_totales || 0,
+              descripcion: act?.descripcion || '',
+              hora_inicio: act?.hora_inicio || '',
+              hora_fin: act?.hora_fin || '',
+              mapa_iframe: act?.mapa_iframe || ''
             };
           });
         }
-
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al cargar datos:', err),
@@ -94,19 +132,29 @@ export class Home implements OnInit {
 
   filtrarPorProvincia(provincia: string) {
     this.provinciaFiltro = provincia;
+    this.paginaActualActividades = 1;
+    this.paginaActualReservas = 1;
+  }
+
+  onBusqueda(texto: string) {
+    this.textoBusqueda = texto;
+    this.paginaActualActividades = 1;
+    this.paginaActualReservas = 1;
   }
 
   yaReservada(id: any): boolean {
     return this.misReservas.some((r) => Number(r.actividadId) === Number(id));
   }
 
-  verDetalleActividad(actividad: any) {
+  verDetalleActividad(actividad: any, esReserva: boolean = false) {
     this.actividadSeleccionada = actividad;
+    this.esReservaActiva = esReserva;
     document.body.style.overflow = 'hidden';
   }
 
   cerrarDetalle() {
     this.actividadSeleccionada = null;
+    this.esReservaActiva = false;
     document.body.style.overflow = 'auto';
   }
 

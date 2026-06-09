@@ -1,48 +1,45 @@
-<nav class="navbar navbar-expand-lg navbar-dark">
+<nav class="navbar navbar-expand-lg navbar-light">
   <div class="container-fluid">
-    
     <a class="navbar-brand me-0" routerLink="/">
-      <img src="/logo.svg" alt="TerretaHouse">
+      <img src="/logo-2.png" alt="Terreta&Activity" class="logo-app header-logo">
     </a>
 
     <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div [class.show]="!isMenuCollapsed" class="collapse navbar-collapse justify-content-center">
-      <ul class="navbar-nav">
+    <div [class.show]="!isMenuCollapsed" class="collapse navbar-collapse">
+      <ul class="navbar-nav mx-auto"> 
         @if (comprobarAdmin()) {
-          <li class="nav-item"><a class="nav-link" routerLink="/crear-reservas">Gestionar Actividades</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/gestion-usuarios">Gestionar Usuarios</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/mis-reservas">Ver Actividades</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/crear-reservas" (click)="cerrarMenu()">Gestionar Actividades</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/gestion-usuarios" (click)="cerrarMenu()">Gestionar Usuarios</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/mis-reservas" (click)="cerrarMenu()">Ver Actividades</a></li>
         } @else {
-          <li class="nav-item"><a class="nav-link" routerLink="/">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/" (click)="cerrarMenu()">Inicio</a></li>
           @if (comprobarLogueado()) {
-            <li class="nav-item"><a class="nav-link" routerLink="/mis-reservas">Mis Reservas</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/mis-reservas" (click)="cerrarMenu()">Mis Reservas</a></li>
           }
-          <li class="nav-item"><a class="nav-link" routerLink="/guias">Guías</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/ofertas">Ofertas</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/contacto">Contacto</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/guias" (click)="cerrarMenu()">Guías</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/ofertas" (click)="cerrarMenu()">Ofertas</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/contacto" (click)="cerrarMenu()">Contacto</a></li>
         }
       </ul>
-    </div>
 
-    <div class="d-none d-lg-block">
       <ul class="navbar-nav">
         @if (!comprobarLogueado()) {
           <li class="nav-item">
-            <a class="btn btn-outline-light me-2" routerLink="/login">Entrar</a>
-            <a class="btn btn-outline-light" routerLink="/register">Registro</a>
+            <a class="btn btn-outline-light me-2" routerLink="/login" (click)="cerrarMenu()">Entrar</a>
+            <a class="btn btn-outline-light" routerLink="/register" (click)="cerrarMenu()">Registro</a>
           </li>
         } @else {
           <li class="nav-item dropdown">
             <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" (click)="conmutarMenu()">
-              <img [src]="obtenerFoto()" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+              <img [src]="obtenerFoto()" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
               {{ usuarioActual?.nombre }}
             </button>
             
             @if (menuAbierto) {
-              <ul class="dropdown-menu show" style="display: block; right: 0; left: auto;">
+              <ul class="dropdown-menu dropdown-menu-lg-end w-auto" style="max-width: 200px; display: block;">
                 @if (comprobarAdmin()) {
                   <li class="dropdown-item-text text-danger fw-bold">ADMINISTRADOR</li>
                   <li><hr class="dropdown-divider"></li>

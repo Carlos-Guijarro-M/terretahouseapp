@@ -8,30 +8,43 @@
       <h2 class="text-primary mb-4">Editando: {{ actividad.titulo }}</h2>
 
       <form (submit)="guardarCambios()" class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Título</label>
+        <div class="col-md-6">
+          <label class="form-label">Título</label>
           <input type="text" class="form-control" [(ngModel)]="actividad.titulo" name="titulo" required />
         </div>
-
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Provincia</label>
+        <div class="col-md-6">
+          <label class="form-label">Provincia</label>
           <select class="form-select" [(ngModel)]="actividad.provincia" name="provincia" required>
             <option value="Valencia">Valencia</option>
             <option value="Castellón">Castellón</option>
             <option value="Alicante">Alicante</option>
           </select>
         </div>
-
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Fecha</label>
+        <div class="col-md-4">
+          <label class="form-label">Fecha</label>
           <input type="date" class="form-control" [(ngModel)]="actividad.fecha" name="fecha" required />
         </div>
-
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Plazas Totales</label>
-          <input type="number" class="form-control" [(ngModel)]="actividad.plazas_totales" name="plazas_totales" min="1" required />
+        <div class="col-md-4">
+          <label class="form-label">Hora Inicio</label>
+          <input type="time" class="form-control" [(ngModel)]="actividad.hora_inicio" name="hora_inicio" />
         </div>
-
+        <div class="col-md-4">
+          <label class="form-label">Hora Fin</label>
+          <input type="time" class="form-control" [(ngModel)]="actividad.hora_fin" name="hora_fin" />
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-control" [(ngModel)]="actividad.descripcion" name="descripcion"></textarea>
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Plazas Totales</label>
+          <input type="number" class="form-control" [(ngModel)]="actividad.plazas_totales" name="plazas_totales" />
+        </div>
+        <div class="col-md-12">
+          <label class="form-label">Código Iframe del Mapa</label>
+          <textarea class="form-control" [(ngModel)]="actividad.mapa_iframe" name="mapa_iframe" rows="2" ></textarea>
+        </div>
+        
         <div class="col-md-9">
           <label class="form-label fw-bold">Imagen de la Actividad</label>
           @if (actividad.imagen_url) {

@@ -13,6 +13,26 @@
           <input type="text" class="form-control" [(ngModel)]="nuevaActividad.titulo" name="titulo" required />
         </div>
         <div class="col-md-3">
+          <label class="form-label fw-bold">Descripción</label>
+          <textarea class="form-control" [(ngModel)]="nuevaActividad.descripcion" name="descripcion" required></textarea>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Fecha</label>
+          <input type="date" class="form-control" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Hora Inicio</label>
+          <input type="time" class="form-control" [(ngModel)]="nuevaActividad.hora_inicio" name="hora_inicio" required />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Hora Fin</label>
+          <input type="time" class="form-control" [(ngModel)]="nuevaActividad.hora_fin" name="hora_fin" required />
+        </div>
+        <div class="col-md-9">
+          <label class="form-label fw-bold">Mapa (iframe)</label>
+          <input type="text" class="form-control" [(ngModel)]="nuevaActividad.mapa_iframe" name="mapa_iframe" />
+        </div>
+        <div class="col-md-3">
           <label class="form-label fw-bold">Provincia</label>
           <select class="form-select" [(ngModel)]="nuevaActividad.provincia" name="provincia" required>
             <option value="" disabled selected>Selecciona una provincia</option>
@@ -20,10 +40,6 @@
             <option value="Castellón">Castellón</option>
             <option value="Alicante">Alicante</option>
           </select>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Fecha</label>
-          <input type="date" class="form-control" [(ngModel)]="nuevaActividad.fecha" name="fecha" required />
         </div>
         <div class="col-md-3">
           <label class="form-label fw-bold">Plazas Totales</label>
@@ -55,6 +71,15 @@
         <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Alicante'" (click)="filtrarPorProvincia('Alicante')">Alicante</button>
       </div>
 
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar actividad..." [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltros()" />
+          </div>
+        </div>
+      </div>
+
       @if (actividades.length === 0) {
         <p class="text-center text-muted">No hay actividades creadas.</p>
       } @else {
@@ -62,22 +87,31 @@
           <table class="table table-hover align-middle">
             <thead class="table-dark">
               <tr>
-                <th>ID</th>
+                <th (click)="ordenar('titulo')" style="cursor: pointer;">
+                  Ordenar 
+                  <i class="bi" [ngClass]="{
+                    'bi-dash': ordenAsc === null,
+                    'bi-sort-alpha-down': ordenAsc === 'asc',
+                    'bi-sort-alpha-up': ordenAsc === 'desc'
+                  }"></i>
+                </th>
                 <th>Título</th>
                 <th>Provincia</th>
                 <th>Fecha</th>
+                <th>Horario</th>
                 <th>Plazas</th>
                 <th>Imagen</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              @for (act of actividades; track act.id) {
+              @for (act of actividadesPaginadas; track act.id) {
                 <tr>
                   <td><strong>{{ act.id }}</strong></td>
                   <td>{{ act.titulo }}</td>
                   <td>{{ act.provincia }}</td>
                   <td>{{ act.fecha }}</td>
+                  <td>{{ act.hora_inicio }} - {{ act.hora_fin }}</td>
                   <td>{{ act.plazas_ocupadas || 0 }}/{{ act.plazas_totales }}</td>
                   <td>
                     @if (act.imagen_url) {
@@ -90,6 +124,7 @@
                     <div class="btn-group btn-group-sm">
                       <button class="btn btn-outline-primary" (click)="irAEditar(act.id)">Editar</button>
                       <button class="btn btn-outline-danger" (click)="eliminarActividad(act.id)">Borrar</button>
+                      <button class="btn btn-outline-success" (click)="verUsuarios(act)">Ver Usuarios</button>
                       <button class="btn btn-outline-secondary" (click)="verDetalleActividad(act)">Vista Previa</button>
                     </div>
                   </td>
@@ -98,6 +133,12 @@
             </tbody>
           </table>
         </div>
+
+        <app-pagination
+          [totalPaginas]="totalPaginas"
+          [paginaActual]="paginaActual"
+          (paginaCambiada)="paginaActual = $event">
+        </app-pagination>
       }
     </section>
   </main>
@@ -113,9 +154,67 @@
         </div>
         <div class="modal-body">
           <img [src]="actividadSeleccionada.imagen_url || '/placeholder-image.jpg'" class="w-100 mb-3" style="height: 300px; object-fit: cover; border-radius: 8px;">
+          <p><strong>Descripción:</strong> {{ actividadSeleccionada.descripcion }}</p>
           <p><strong>Provincia:</strong> {{ actividadSeleccionada.provincia }}</p>
-          <p><strong>Fecha:</strong> {{ actividadSeleccionada.fecha }}</p>
+          <p><strong>Fecha:</strong> {{ actividadSeleccionada.fecha }} | <strong>Horario:</strong> {{ actividadSeleccionada.hora_inicio }} a {{ actividadSeleccionada.hora_fin }}</p>
           <p><strong>Plazas:</strong> {{ actividadSeleccionada.plazas_ocupadas || 0 }}/{{ actividadSeleccionada.plazas_totales }}</p>
+
+          @if (actividadSeleccionada.mapa_iframe) {
+            <div style="width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-top: 15px;">
+              <div [innerHTML]="actividadSeleccionada.mapa_iframe | safeHtml" style="width: 100%; height: 100%;"></div>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cerrarDetalle()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (actividadUsuarios) {
+  <div class="modal d-block" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Usuarios apuntados a: {{ actividadUsuarios.titulo }}</h5>
+          <button type="button" class="btn-close" (click)="cerrarModalUsuarios()"></button>
+        </div>
+        <div class="modal-body">
+          @if (usuariosActividad.length === 0) {
+            <p class="text-center text-muted">Ningún usuario ha reservado esta actividad todavía.</p>
+          } @else {
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Fecha reserva</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (u of usuariosActividad; track u.reserva_id) {
+                    <tr>
+                      <td>{{ u.nombre }} {{ u.apellidos }}</td>
+                      <td>{{ u.email }}</td>
+                      <td>{{ u.fecha }}</td>
+                      <td>{{ u.estado }}</td>
+                      <td>
+                        <button class="btn btn-outline-danger btn-sm" (click)="eliminarReservaDeActividad(u.reserva_id)">Eliminar</button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalUsuarios()">Cerrar</button>
         </div>
       </div>
     </div>

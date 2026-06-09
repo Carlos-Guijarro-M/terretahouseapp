@@ -1,0 +1,17 @@
+@if (totalPaginas > 1) {
+  <nav class="mt-4 d-flex justify-content-center">
+    <ul class="pagination">
+      <li class="page-item" [class.disabled]="paginaActual === 1">
+        <button class="page-link" (click)="cambiar(paginaActual - 1)"></button>
+      </li>
+      @for (p of paginas; track p) {
+        <li class="page-item" [class.active]="paginaActual === p">
+          <button class="page-link" (click)="cambiar(p)">{{ p }}</button>
+        </li>
+      }
+      <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+        <button class="page-link" (click)="cambiar(paginaActual + 1)"></button>
+      </li>
+    </ul>
+  </nav>
+}

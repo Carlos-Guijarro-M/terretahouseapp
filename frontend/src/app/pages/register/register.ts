@@ -2,11 +2,13 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
+import { RecaptchaModule } from 'ng-recaptcha';
+
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, RecaptchaModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -21,8 +23,13 @@ export class Register {
   
   archivoSeleccionado: File | null = null;
   error: string = '';
+  tokenCaptcha: string = '';
 
   constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
+
+  resolved(token: string | null) {
+    this.tokenCaptcha = token || '';
+  }
 
   onFileSelected(event: any) {
     if (event.target.files.length > 0) {
@@ -32,6 +39,11 @@ export class Register {
 
   register() {
     this.error = '';
+
+    if(!this.tokenCaptcha){
+      this.error = 'Por favor, completa el CAPTCHA.';
+      return;
+    }
 
     if (this.formData.password !== this.formData.confirmarPassword) {
       this.error = 'Las contraseñas no coinciden';
@@ -43,6 +55,7 @@ export class Register {
     formData.append('password', this.formData.password);
     formData.append('nombre', this.formData.nombre);
     formData.append('apellidos', this.formData.apellidos);
+    formData.append('recaptcha_token', this.tokenCaptcha);
     
     if (this.archivoSeleccionado) {
       formData.append('foto', this.archivoSeleccionado);

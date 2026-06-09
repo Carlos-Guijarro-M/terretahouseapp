@@ -16,7 +16,10 @@ export class RecuperarPassword {
   token: string = '';
   error: string = '';
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   recuperar() {
     this.error = '';
@@ -27,20 +30,21 @@ export class RecuperarPassword {
       return;
     }
 
-    this.http.post<any>('http://localhost:8000/api/recuperar_password.php', { email: this.email }).subscribe({
-      next: (res) => {
-        if (res.status === 'success') {
-          this.token = res.token;
+    this.http
+      .post<any>('http://localhost:8000/api/recuperar_password.php', { email: this.email })
+      .subscribe({
+        next: (res) => {
+          if (res.status === 'success') {
+            this.token = res.token;
+          } else {
+            this.error = res.message;
+          }
           this.cdr.detectChanges();
-        } else {
-          this.error = res.message;
+        },
+        error: (err) => {
+          this.error = err.error?.message || 'Error al conectar con el servidor.';
           this.cdr.detectChanges();
-        }
-      },
-      error: () => {
-        this.error = 'Error al conectar con el servidor.'
-        this.cdr.detectChanges();
-      }
-    });
+        },
+      });
   }
 }
