@@ -1,23 +1,60 @@
 .reservas {
-  background-color: #F6F1EC;
+  background-color: #f6f1ec;
   min-height: 100vh;
 }
 
-.text-primary { 
-  color: #A0685D !important; 
+.hero {
+  height: 35vh;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/hero1-home.jpg') center/cover;
 }
-.border-primary { 
-  border-color: #A0685D !important; 
+
+.titulo-color {
+  color: #a0685d;
+}
+
+.text-primary {
+  color: #a0685d !important;
+}
+.btn-primary {
+  background-color: #a0685d;
+  border-color: #a0685d;
 }
 
 .border-dashed {
-  border: 2px dashed #A0685D;
+  border: 2px dashed #a0685d;
   background-color: transparent;
 }
 
-.card { 
-  transition: transform 0.2s; 
+.card {
+  transition: transform 0.2s;
 }
-.card:hover { 
-  transform: translateY(-5px); 
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-reserva {
+  border-color: #a0685d !important;
+}
+.card-img-reserva {
+  height: 180px;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+.modal-img-full {
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.map-container {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 15px;
 }

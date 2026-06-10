@@ -1,11 +1,35 @@
-.text-primary { color: #A0685D !important; }
+.login-container {
+  background-color: #F6F1EC;
+}
+
+.login-card-box {
+  width: 100%;
+  max-width: 400px;
+}
+
+.custom-link {
+  color: #A0685D !important;
+}
+
+.custom-link:hover {
+  color: #855348 !important;
+  text-decoration: underline !important;
+}
+
+.text-primary { 
+  color: #A0685D !important; 
+}
+
 .btn-primary { 
   background-color: #A0685D; 
   border-color: #A0685D; 
+  color: white;
 }
+
 .btn-primary:hover { 
   background-color: #855348; 
   border-color: #855348; 
+  color: white;
 }
 
 .alert-danger {

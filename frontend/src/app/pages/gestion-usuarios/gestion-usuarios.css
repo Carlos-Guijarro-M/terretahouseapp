@@ -1,13 +1,34 @@
-.text-primary {
-  color: #A0685D !important;
+.gestion-usuarios {
+  background-color: #F6F1EC;
+  min-height: 100vh;
 }
 
-.btn-primary {
+.title-primary { color: #A0685D; }
+
+.btn-primary-custom {
   background-color: #A0685D !important;
   border-color: #A0685D !important;
+  color: white;
 }
 
-.btn-primary:hover {
+.btn-primary-custom:hover {
   background-color: #8a594f !important;
   border-color: #8a594f !important;
+}
+
+.table-header-custom {
+  background-color: #A0685D !important;
+  color: white;
+}
+
+.modal-overlay {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1055;
+  overflow-y: auto;
 }

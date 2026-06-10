@@ -3,21 +3,23 @@
   min-height: 100vh;
 }
 
-.guias-contenedor .hero-simple {
+.hero-guias {
   height: 40vh;
   background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/hero1-home.jpg') center/cover;
 }
 
-.text-primary {
+.title-primary {
   color: #a0685d !important;
 }
 
-.btn-primary {
+.btn-primary-custom {
   background-color: #a0685d;
   border-color: #a0685d;
+  color: white;
 }
 
-.btn-primary:hover {
+.btn-primary-custom:hover {
   background-color: #855348;
   border-color: #855348;
+  color: white;
 }

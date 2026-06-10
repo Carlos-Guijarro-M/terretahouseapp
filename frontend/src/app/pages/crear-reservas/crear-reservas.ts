@@ -121,7 +121,7 @@ export class CrearReservas implements OnInit {
     const formData = new FormData();
     formData.append('titulo', this.nuevaActividad.titulo);
     formData.append('descripcion', this.nuevaActividad.descripcion);
-    formData.append('fecha', this.nuevaActividad.fecha);
+    formData.append('fecha_actividad', this.nuevaActividad.fecha);
     formData.append('hora_inicio', this.nuevaActividad.hora_inicio);
     formData.append('hora_fin', this.nuevaActividad.hora_fin);
     formData.append('provincia', this.nuevaActividad.provincia);

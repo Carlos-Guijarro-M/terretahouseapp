@@ -1,18 +1,42 @@
+.footer-main {
+  background-color: var(--color-carbon);
+}
+
+.footer-divider {
+  border-color: var(--color-blanco);
+  opacity: 0.5;
+  margin: 1.5rem 0;
+}
 
 .nav-link {
-    transition: color 0.3s ease;
-    cursor: pointer;
+  color: var(--color-blanco);
+  transition: color 0.3s ease;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem 0;
 }
 
 .nav-link:hover {
-    color: #CCCCCC !important;
-    text-decoration: none;
+  color: var(--color-naranja-citrico);
 }
 
-footer p, footer a {
-    font-weight: bold;
+.social-link {
+  font-size: 1rem;
+  
 }
 
-hr.border-light {
-    opacity: 1;
+.footer-legal {
+  color: var(--color-blanco);
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+.footer-legal:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.footer-main p {
+  font-weight: bold;
+  margin-bottom: 0;
 }

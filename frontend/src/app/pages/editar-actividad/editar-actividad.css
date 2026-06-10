@@ -1,20 +1,37 @@
-.text-primary { 
-  color: #A0685D !important; 
-}
-.btn-success { 
-  background-color: #A0685D; 
-  border-color: #A0685D; 
-}
-.btn-success:hover { 
-  background-color: #855348; 
-  border-color: #855348; 
-}
-
-.table-dark { 
-  background-color: #A0685D !important; 
-}
-
 .gestion-actividades {
-  background-color: #F6F1EC;
+  background-color: #f6f1ec;
   min-height: 100vh;
+}
+
+.hero-editar {
+  height: 200px;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/hero1-home.jpg') center/cover;
+}
+
+.title-primary {
+  color: #a0685d !important;
+}
+
+.btn-primary-custom {
+  background-color: #a0685d;
+  border-color: #a0685d;
+  color: white;
+}
+
+.btn-primary-custom:hover {
+  background-color: #855348;
+  border-color: #855348;
+  color: white;
+}
+
+.preview-img {
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.form-label {
+  font-weight: 600;
 }

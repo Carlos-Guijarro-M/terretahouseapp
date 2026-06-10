@@ -6,7 +6,7 @@
       </li>
       @for (p of paginas; track p) {
         <li class="page-item" [class.active]="paginaActual === p">
-          <button class="page-link" (click)="cambiar(p)">{{ p }}</button>
+          <button class="page-link" [title]="'Ir a la página ' + p" (click)="cambiar(p)">{{ p }}</button>
         </li>
       }
       <li class="page-item" [class.disabled]="paginaActual === totalPaginas">

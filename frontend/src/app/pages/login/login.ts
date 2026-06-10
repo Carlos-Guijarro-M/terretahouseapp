@@ -9,6 +9,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
   standalone: true,
   imports: [FormsModule, RouterLink, RecaptchaModule],
   templateUrl: './login.html',
+  styleUrl: '/login.css'
 })
 export class Login {
   formData = {

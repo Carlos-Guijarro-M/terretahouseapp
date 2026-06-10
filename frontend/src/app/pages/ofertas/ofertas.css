@@ -1,24 +1,24 @@
-
 .ofertas-contenedor {
   background-color: #f6f1ec;
   min-height: 100vh;
 }
 
-.ofertas-contenedor .hero-simple {
+.hero-simple {
   height: 40vh;
   background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/hero1-home.jpg') center/cover;
 }
 
-.text-primary {
+.text-primary-custom {
   color: #a0685d !important;
 }
 
-.btn-primary {
+.btn-primary-custom {
   background-color: #a0685d;
   border-color: #a0685d;
+  color: #fff;
 }
 
-.btn-primary:hover {
+.btn-primary-custom:hover {
   background-color: #855348;
   border-color: #855348;
 }

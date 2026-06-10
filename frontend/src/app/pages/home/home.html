@@ -16,15 +16,15 @@
         <h2 class="display-6 fw-bold titulo-experiencias mb-4">Próximas Experiencias Disponibles</h2>
       }
 
-      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Todas'" (click)="filtrarPorProvincia('Todas')">Todas</button>
-      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Valencia'" (click)="filtrarPorProvincia('Valencia')">Valencia</button>
-      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Castellón'" (click)="filtrarPorProvincia('Castellón')">Castellón</button>
-      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Alicante'" (click)="filtrarPorProvincia('Alicante')">Alicante</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Todas'" (click)="filtrarPorProvincia('Todas')" title="Mostrar todas las actividades">Todas</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Valencia'" (click)="filtrarPorProvincia('Valencia')" title="Filtrar actividades en Valencia">Valencia</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Castellón'" (click)="filtrarPorProvincia('Castellón')" title="Filtrar actividades en Castellón">Castellón</button>
+      <button class="btn m-1" [class.btn-primary]="provinciaFiltro === 'Alicante'" (click)="filtrarPorProvincia('Alicante')" title="Filtrar actividades en Alicante">Alicante</button>
 
       <div class="d-flex justify-content-center mt-3">
         <div class="input-group w-50">
           <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-          <input type="text" class="form-control" placeholder="Buscar actividad..."
+          <input type="text" class="form-control" placeholder="Buscar actividad..." aria-label="Buscar actividades"
             [ngModel]="textoBusqueda" (ngModelChange)="onBusqueda($event)" />
         </div>
       </div>
@@ -36,16 +36,18 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           @for (res of reservasPaginadas; track res.id) {
             <div class="col">
-              <div class="card h-100 shadow-sm border-0 border-top border-4" style="border-color: #A0685D;">
-                <img [src]="res.imagen_url" class="card-img-top" style="height: 180px; object-fit: cover;" (click)="app.abrirImagen(res.imagen_url)">
+              <div class="card h-100 shadow-sm border-0 border-top border-4 card-reserva">
+                <img [src]="res.imagen_url" class="card-img-top" style="height: 180px; object-fit: cover; cursor: pointer;" (click)="app.abrirImagen(res.imagen_url)" [alt]="'Imagen de la reserva: ' + res.titulo" title="Haz clic para ampliar la imagen">
                 <div class="card-body">
                   <span class="badge bg-secondary mb-2">{{ res.provincia }}</span>
                   <h5 class="card-title fw-bold">{{ res.titulo }}</h5>
                   <p class="card-text mb-1 text-muted small">{{ (res.descripcion.length > 50) ? (res.descripcion | slice:0:50) + '...' : res.descripcion }}</p>
-                  <p class="card-text mb-1 small"><strong>Fecha:</strong> {{ res.fecha }}</p>
+                  <p class="card-text mb-1 small">
+                    <strong>Fecha:</strong> {{ res.fecha }} 
+                    <span>| {{ res.hora_inicio.substring(0, 5) }} - {{ res.hora_fin.substring(0, 5) }}</span>
+                  </p>
                   <p class="card-text mb-2 small"><strong>Plazas:</strong> {{ res.plazas_ocupadas || 0 }} de {{ res.plazas_totales }} reservadas</p>
-                  <a href="javascript:void(0)" class="d-block mb-3 small fw-bold" (click)="verDetalleActividad(res, true)" style="color: #A0685D;">+ Ver detalles completos</a>
-                  <button type="button" (click)="cancelarReserva(res.id)" class="btn btn-outline-danger w-100">Cancelar Reserva</button>
+                  <button type="button" (click)="cancelarReserva(res.id)" class="btn btn-outline-danger w-100" title="Cancelar esta reserva">Cancelar Reserva</button>
                 </div>
               </div>
             </div>
@@ -66,25 +68,25 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       @for (act of actividadesPaginadas; track act.id) {
         <div class="col">
-          <div class="card h-100 border-0 shadow-sm">
-            <img [src]="act.imagen_url || '/placeholder-image.jpg'" class="card-img-top" style="height: 200px; object-fit: cover; cursor: pointer;" (click)="app.abrirImagen(act.imagen_url)">
+          <div class="card h-100 border-0 shadow-sm card-experiencia">
+            <img [src]="act.imagen_url || '/placeholder-image.jpg'" class="card-img-top" style="height: 200px; object-fit: cover; cursor: pointer;" (click)="app.abrirImagen(act.imagen_url)" [alt]="'Imagen de la actividad: ' + act.titulo" title="Haz clic para ampliar la imagen">
             <div class="card-body d-flex flex-column">
               <span class="badge bg-secondary mb-2 align-self-start">{{ act.provincia }}</span>
               <h5 class="card-title fw-bold mt-2 text-dark">{{ act.titulo }}</h5>
               <p class="text-muted small mb-1">{{ (act.descripcion.length > 50) ? (act.descripcion | slice:0:50) + '...' : act.descripcion }}</p>
-              <p class="text-muted mb-1 small">Fecha: <strong>{{ act.fecha }}</strong></p>
+              <p class="text-muted mb-1 small">Fecha: <strong>{{ act.fecha }}</strong>
+              <span> <strong> | {{ act.hora_inicio.substring(0, 5) }} - {{ act.hora_fin.substring(0, 5) }}</strong></span>
+              </p>
               <p class="text-muted mb-3 small">Plazas: <strong>{{ act.plazas_ocupadas }} de {{ act.plazas_totales }} reservadas</strong></p>
 
-              <a href="javascript:void(0)" class="d-block mb-3 small fw-bold" (click)="verDetalleActividad(act, false)" style="color: #A0685D;">+ Ver detalles completos</a>
-
               <div class="mt-auto d-flex gap-2">
-                <button type="button" (click)="verDetalleActividad(act, false)" class="btn btn-outline-secondary w-50">Vista Previa</button>
+                <button type="button" (click)="verDetalleActividad(act, false)" class="btn btn-outline-secondary w-50" title="Ver más detalles de la actividad">Ver más detalles</button>
                 @if (userLogeado) {
-                  <button type="button" (click)="reservarActividad(act)" class="btn btn-primary w-50" [disabled]="act.plazas_ocupadas >= act.plazas_totales">
+                  <button type="button" (click)="reservarActividad(act)" class="btn btn-primary w-50" [disabled]="act.plazas_ocupadas >= act.plazas_totales" [title]="act.plazas_ocupadas >= act.plazas_totales ? 'Actividad completa' : 'Reservar esta actividad'">
                     {{ act.plazas_ocupadas >= act.plazas_totales ? 'Completo' : 'Reservar' }}
                   </button>
                 } @else {
-                  <a routerLink="/login" class="btn btn-primary w-50">Iniciar sesión</a>
+                  <a routerLink="/login" class="btn btn-primary w-50" title="Iniciar sesión para reservar">Reservar</a>
                 }
               </div>
             </div>
@@ -112,29 +114,29 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title fw-bold">{{ actividadSeleccionada.titulo }}</h5>
-          <button type="button" class="btn-close" (click)="cerrarDetalle()"></button>
+          <button type="button" class="btn-close" (click)="cerrarDetalle()" title="Cerrar detalles"></button>
         </div>
         <div class="modal-body">
-          <img [src]="actividadSeleccionada.imagen_url || '/placeholder-image.jpg'" class="w-100 mb-3" style="height: 300px; object-fit: cover; border-radius: 8px;">
+          <img [src]="actividadSeleccionada.imagen_url || '/placeholder-image.jpg'" class="w-100 mb-3" style="height: 300px; object-fit: cover; border-radius: 8px;" [alt]="'Imagen de la actividad: ' + actividadSeleccionada.titulo" title="Imagen de la actividad">
           <p><strong>Descripción:</strong> {{ actividadSeleccionada.descripcion }}</p>
           <p><strong>Provincia:</strong> {{ actividadSeleccionada.provincia }}</p>
           <p><strong>Fecha:</strong> {{ actividadSeleccionada.fecha }} | <strong>Horario:</strong> {{ actividadSeleccionada.hora_inicio }} a {{ actividadSeleccionada.hora_fin }}</p>
           <p><strong>Plazas:</strong> {{ actividadSeleccionada.plazas_ocupadas }} de {{ actividadSeleccionada.plazas_totales }} reservadas</p>
           <div style="width: 100%; height: 180px; border-radius: 8px; overflow: hidden; margin-top: 15px;">
-            <div [innerHTML]="actividadSeleccionada.mapa_iframe | safeHtml" style="width: 100%; height: 100%;"></div>
+            <div [innerHTML]="actividadSeleccionada.mapa_iframe | safeHtml" style="width: 100%; height: 100%;" title="Mapa de ubicación de la actividad"></div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" (click)="cerrarDetalle()">Cerrar</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="cerrarDetalle()" title="Cerrar detalles">Cerrar</button>
           @if (esReservaActiva) {
-            <button type="button" (click)="cancelarReserva(actividadSeleccionada.id); cerrarDetalle()" class="btn btn-outline-danger">Cancelar Reserva</button>
+            <button type="button" (click)="cancelarReserva(actividadSeleccionada.id); cerrarDetalle()" class="btn btn-outline-danger" title="Cancelar esta reserva">Cancelar Reserva</button>
           } @else {
             @if (userLogeado) {
-              <button type="button" (click)="reservarActividad(actividadSeleccionada); cerrarDetalle()" class="btn btn-primary" [disabled]="actividadSeleccionada.plazas_ocupadas >= actividadSeleccionada.plazas_totales">
+              <button type="button" (click)="reservarActividad(actividadSeleccionada); cerrarDetalle()" class="btn btn-primary" [disabled]="actividadSeleccionada.plazas_ocupadas >= actividadSeleccionada.plazas_totales" [title]="actividadSeleccionada.plazas_ocupadas >= actividadSeleccionada.plazas_totales ? 'Actividad completa' : 'Reservar esta actividad'">
                 {{ actividadSeleccionada.plazas_ocupadas >= actividadSeleccionada.plazas_totales ? 'Completo' : 'Reservar Plaza' }}
               </button>
             } @else {
-              <a routerLink="/login" class="btn btn-primary">Iniciar sesión para reservar</a>
+              <a routerLink="/login" class="btn btn-primary" title="Iniciar sesión para reservar">Iniciar sesión para reservar</a>
             }
           }
         </div>

@@ -1,7 +1,7 @@
-<div class="register-container d-flex justify-content-center align-items-center min-vh-100 p-3" style="background-color: #F6F1EC;">
-  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+<div class="register-container">
+  <div class="card shadow-sm p-4 register-card">
     <div class="card-body">
-      <h2 class="text-center text-primary mb-4 fw-bold">Crear cuenta</h2>
+      <h2 class="text-center title-primary mb-4 fw-bold">Crear cuenta</h2>
 
       <form (ngSubmit)="register()">
         <div class="mb-3">
@@ -42,10 +42,10 @@
           </div>
         }
         
-        <button type="button" class="btn btn-primary w-100 py-2 mt-2" (click)="register()">Registrarme</button>
+        <button type="submit" class="btn btn-primary-custom w-100 py-2 mt-2">Registrarme</button>
         
         <p class="text-center mt-3 small text-muted">
-          ¿Ya tienes cuenta? <a routerLink="/login" class="text-primary fw-bold text-decoration-none">Inicia sesión</a>
+          ¿Ya tienes cuenta? <a routerLink="/login" class="title-primary fw-bold text-decoration-none">Inicia sesión</a>
         </p>
       </form>
     </div>

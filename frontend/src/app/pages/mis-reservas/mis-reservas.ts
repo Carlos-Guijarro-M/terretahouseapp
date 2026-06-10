@@ -13,6 +13,7 @@ import { Pagination } from '../../components/pagination/pagination';
   standalone: true,
   imports: [CommonModule, FormsModule, SafeHtmlPipe, Pagination],
   templateUrl: './mis-reservas.html',
+  styleUrl: '/mis-reservas.css'
 })
 export class MisReservas implements OnInit {
   todasLasReservas: any[] = [];

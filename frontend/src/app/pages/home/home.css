@@ -1,43 +1,93 @@
 .home-sitio {
-  padding-bottom: 0px !important;
+  padding-bottom: 0px;
 }
 
 .container.py-5 {
-  padding-bottom: 2rem !important; 
-}
-
-.border-primary {
-  border-color: #8a5a50 !important;
-}
-
-.text-primary {
-  color: #8a5a50 !important;
-}
-
-.bg-primary {
-  background-color: #8a5a50 !important;
+  padding-bottom: 2rem;
 }
 
 .titulo-experiencias {
-  color: #8a5a50 !important;
+  color: var(--color-naranja-valencia);
 }
 
-.card-title {
-  color: #212529 !important;
+.card-reserva {
+  border-top: 4px solid var(--color-naranja-valencia);
 }
 
-.badge {
-  display: inline-block;
-  width: auto;
+.card-experiencia:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.badge.bg-secondary {
+  background-color: var(--color-carbon);
 }
 
 .btn-reservar {
-  background-color: #A0685D !important;
-  color: white !important;
-  border: none;
+  background-color: var(--color-naranja-valencia);
+  color: white;
 }
 
 .btn-reservar:hover {
-  background-color: #8a5a50 !important;
+  background-color: var(--color-naranja-citrico);
   color: white;
+}
+
+.btn-primary {
+  background-color: var(--color-naranja-valencia);
+  border-color: var(--color-naranja-valencia);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-naranja-citrico);
+  border-color: var(--color-naranja-citrico);
+}
+
+.btn-primary:disabled {
+  background-color: var(--color-carbon);
+  border-color: var(--color-carbon);
+  opacity: 0.65;
+}
+
+.btn-outline-secondary {
+  color: var(--color-carbon);
+  border-color: var(--color-carbon);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--color-carbon);
+  color: white;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.card-img-top {
+  cursor: pointer;
+}
+
+.card-img-top:hover {
+  opacity: 0.9;
+}
+
+.modal img {
+  cursor: pointer;
+}
+
+.pagination .page-link {
+  background-color: transparent;
+  border: none;
+  color: var(--color-carbon);
+}
+
+.pagination .page-item.active .page-link {
+  color: var(--color-naranja-valencia);
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.text-muted {
+  color: #6c757d;
 }

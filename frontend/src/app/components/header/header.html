@@ -1,10 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-light">
   <div class="container-fluid">
-    <a class="navbar-brand me-0" routerLink="/">
-      <img src="/logo-2.png" alt="Terreta&Activity" class="logo-app header-logo">
+    <a class="navbar-brand me-0" routerLink="/" title="Ir a la página de inicio">
+      <img src="/logo-2.png" alt="Logotipo de Terreta&Activity" class="header-logo">
     </a>
 
-    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed" aria-label="Abrir menú">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -28,21 +28,21 @@
       <ul class="navbar-nav">
         @if (!comprobarLogueado()) {
           <li class="nav-item">
-            <a class="btn btn-outline-light me-2" routerLink="/login" (click)="cerrarMenu()">Entrar</a>
-            <a class="btn btn-outline-light" routerLink="/register" (click)="cerrarMenu()">Registro</a>
+            <a class="btn btn-nav me-2" routerLink="/login" (click)="cerrarMenu()">Entrar</a>
+            <a class="btn btn-nav" routerLink="/register" (click)="cerrarMenu()">Registro</a>
           </li>
         } @else {
           <li class="nav-item dropdown">
-            <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" (click)="conmutarMenu()">
-              <img [src]="obtenerFoto()" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 8px;">
+            <button class="btn btn-nav dropdown-toggle d-flex align-items-center" (click)="conmutarMenu()">
+              <img [src]="obtenerFoto()" [alt]="'Foto de perfil de ' + usuarioActual?.nombre" class="user-avatar">
               {{ usuarioActual?.nombre }}
             </button>
             
             @if (menuAbierto) {
-              <ul class="dropdown-menu dropdown-menu-lg-end w-auto" style="max-width: 200px; display: block;">
+              <ul class="dropdown-menu">
                 @if (comprobarAdmin()) {
                   <li class="dropdown-item-text text-danger fw-bold">ADMINISTRADOR</li>
-                  <li><hr class="dropdown-divider"></li>
+                  <li><hr class="dropdown-divider m-0"></li>
                 }
                 <li><a class="dropdown-item" routerLink="/editar-perfil" (click)="cerrarMenu()">Editar Perfil</a></li>
                 <li><button class="dropdown-item text-danger" (click)="logout()">Salir</button></li>

@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 })
 export class Header implements OnInit {
   menuAbierto: boolean = false;
-  isMenuCollapsed: boolean = true;
+  isMenuCollapsed: boolean = false;
   usuarioActual: any = null;
 
   constructor(public auth: Auth, private router: Router) {}

@@ -1,47 +1,47 @@
-<div class="container py-5">
+<div class="perfil-container py-5">
   <div class="row justify-content-center">
     <div class="col-md-6">
       <div class="card shadow-sm border-0">
         <div class="card-body p-4">
-          <h2 class="fw-bold mb-4">Editar Perfil</h2>
+          <h2 class="title-primary fw-bold mb-4">Editar Perfil</h2>
           
           <div class="mb-3">
-            <label class="form-label">Nombre de usuario</label>
-            <input [(ngModel)]="usuario.nombre" class="form-control" type="text">
+            <label class="form-label fw-bold">Nombre de usuario</label>
+            <input [(ngModel)]="usuario.nombre" class="form-control" type="text" title="Nombre de usuario">
           </div>
           
           <div class="mb-3">
-            <label class="form-label">Correo electrónico</label>
-            <input [(ngModel)]="usuario.email" class="form-control" type="email">
+            <label class="form-label fw-bold">Correo electrónico</label>
+            <input [(ngModel)]="usuario.email" class="form-control" type="email" title="Correo electrónico">
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Cambiar foto de perfil</label>
-            <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+            <label class="form-label fw-bold">Cambiar foto de perfil</label>
+            <input type="file" class="form-control" (change)="onFileSelected($event)" accept="image/*" title="Seleccionar foto de perfil">
           </div>
           
           <div class="mb-3">
-            <label class="form-label">Contraseña Actual</label>
-            <input [(ngModel)]="usuario.password_actual" class="form-control" type="password" placeholder="••••••••">
+            <label class="form-label fw-bold">Contraseña Actual</label>
+            <input [(ngModel)]="usuario.password_actual" class="form-control" type="password" placeholder="••••••••" title="Contraseña actual">
             <small class="text-muted">Necesario para cambiar la contraseña.</small>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Nueva Contraseña</label>
-            <input [(ngModel)]="usuario.password_nueva" class="form-control" type="password" placeholder="••••••••">
+            <label class="form-label fw-bold">Nueva Contraseña</label>
+            <input [(ngModel)]="usuario.password_nueva" class="form-control" type="password" placeholder="••••••••" title="Nueva contraseña">
             <small class="text-muted">Déjalo vacío si no deseas cambiarla.</small>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Confirmar Nueva Contraseña</label>
-            <input [(ngModel)]="usuario.password_confirmar" class="form-control" type="password" placeholder="••••••••">
+            <label class="form-label fw-bold">Confirmar Nueva Contraseña</label>
+            <input [(ngModel)]="usuario.password_confirmar" class="form-control" type="password" placeholder="••••••••" title="Confirmar nueva contraseña">
             
             @if (usuario.password_nueva !== usuario.password_confirmar && usuario.password_confirmar.length > 0) {
               <small class="text-danger fw-bold d-block mt-1">Las contraseñas no coinciden</small>
             }
           </div>
           
-          <button (click)="guardar()" class="btn btn-primary w-100 mt-3">Guardar Cambios</button>
+          <button (click)="guardar()" class="btn btn-primary-custom w-100 mt-3">Guardar Cambios</button>
         </div>
       </div>
     </div>

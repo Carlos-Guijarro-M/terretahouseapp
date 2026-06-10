@@ -1,76 +1,74 @@
-<div class="container py-5">
-  <section class="card p-4 shadow-sm">
-    <h2 class="text-primary mb-4">Gestión de Usuarios</h2>
+<div class="gestion-usuarios py-5">
+  <div class="container">
+    <section class="card p-4 shadow-sm">
+      <h2 class="title-primary mb-4">Gestión de Usuarios</h2>
 
-    <div class="text-center mb-3">
-      <button class="btn m-1" [class.btn-primary]="filtroEstado === 'Todos'" (click)="filtroEstado = 'Todos'; aplicarFiltros()">Todos</button>
-      <button class="btn m-1" [class.btn-primary]="filtroEstado === 'Activo'" (click)="filtroEstado = 'Activo'; aplicarFiltros()">Activos</button>
-      <button class="btn m-1" [class.btn-primary]="filtroEstado === 'Baneado'" (click)="filtroEstado = 'Baneado'; aplicarFiltros()">Baneados</button>
-    </div>
+      <div class="text-center mb-3">
+        @for (estado of ['Todos', 'Activo', 'Baneado']; track estado) {
+          <button class="btn m-1" 
+                  [class.btn-primary-custom]="filtroEstado === estado" 
+                  [class.btn-outline-secondary]="filtroEstado !== estado" 
+                  (click)="filtroEstado = estado; aplicarFiltros()">
+            {{ estado }}
+          </button>
+        }
+      </div>
 
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-6">
-        <div class="input-group">
-          <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-          <input type="text" class="form-control" placeholder="Buscar por nombre..." [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltros()" />
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar por nombre..." [(ngModel)]="textoBusqueda" (ngModelChange)="aplicarFiltros()" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Nombre y Apellidos</th>
-            <th>Email</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (u of usuariosPaginados; track u.id) {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-header-custom">
             <tr>
-              <td><strong>{{ u.id }}</strong></td>
-              <td><strong>{{ u.nombre }} {{ u.apellidos }}</strong></td>
-              <td>{{ u.email }}</td>
-              <td>
-                @if (u.baneado == 1) {
-                  <span class="badge bg-danger">Baneado</span>
-                } @else {
-                  <span class="badge bg-success">Activo</span>
-                }
-              </td>
-              <td>
-                <div class="btn-group btn-group-sm">
-                  <button class="btn btn-outline-warning" (click)="cambiarEstadoBaneo(u)">
-                    {{ u.baneado == 1 ? 'Desbanear' : 'Banear' }}
-                  </button>
-                  <button class="btn btn-outline-danger" (click)="eliminarUsuario(u.id)">Eliminar</button>
-                  <button class="btn btn-outline-success" (click)="verReservas(u)">Ver Reservas</button>
-                </div>
-              </td>
+              <th>ID</th>
+              <th>Nombre y Apellidos</th>
+              <th>Email</th>
+              <th>Estado</th>
+              <th>Acciones</th>
             </tr>
-          } @empty {
-            <tr>
-              <td colspan="5" class="text-center text-muted">No hay usuarios registrados.</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (u of usuariosPaginados; track u.id) {
+              <tr>
+                <td><strong>{{ u.id }}</strong></td>
+                <td><strong>{{ u.nombre }} {{ u.apellidos }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <span class="badge" [class.bg-danger]="u.baneado == 1" [class.bg-success]="u.baneado != 1">
+                    {{ u.baneado == 1 ? 'Baneado' : 'Activo' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-warning" (click)="cambiarEstadoBaneo(u)">
+                      {{ u.baneado == 1 ? 'Desbanear' : 'Banear' }}
+                    </button>
+                    <button class="btn btn-outline-danger" (click)="eliminarUsuario(u.id)">Eliminar</button>
+                    <button class="btn btn-outline-success" (click)="verReservas(u)">Ver Reservas</button>
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="text-center text-muted">No hay usuarios registrados.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
-    <app-pagination
-      [totalPaginas]="totalPaginas"
-      [paginaActual]="paginaActual"
-      (paginaCambiada)="paginaActual = $event">
-    </app-pagination>
-
-  </section>
+      <app-pagination [totalPaginas]="totalPaginas" [paginaActual]="paginaActual" (paginaCambiada)="paginaActual = $event"></app-pagination>
+    </section>
+  </div>
 </div>
 
 @if (usuarioSeleccionado) {
-  <div class="modal d-block" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-overlay">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -84,13 +82,7 @@
             <div class="table-responsive">
               <table class="table table-hover align-middle">
                 <thead class="table-dark">
-                  <tr>
-                    <th>Actividad</th>
-                    <th>Provincia</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                  </tr>
+                  <tr><th>Actividad</th><th>Provincia</th><th>Fecha</th><th>Acciones</th></tr>
                 </thead>
                 <tbody>
                   @for (r of reservasUsuario; track r.id) {
@@ -98,10 +90,7 @@
                       <td>{{ r.titulo }}</td>
                       <td>{{ r.provincia }}</td>
                       <td>{{ r.fecha }}</td>
-                      <td>{{ r.estado }}</td>
-                      <td>
-                        <button class="btn btn-outline-danger btn-sm" (click)="eliminarReservaDeUsuario(r.id)">Eliminar</button>
-                      </td>
+                      <td><button class="btn btn-outline-danger btn-sm" (click)="eliminarReservaDeUsuario(r.id)">Eliminar</button></td>
                     </tr>
                   }
                 </tbody>
@@ -109,9 +98,7 @@
             </div>
           }
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal()">Cerrar</button>
-        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" (click)="cerrarModal()">Cerrar</button></div>
       </div>
     </div>
   </div>

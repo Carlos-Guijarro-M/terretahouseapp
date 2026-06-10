@@ -1,13 +1,26 @@
-.btn-primary {
-    background-color: #855348 !important;
-    border-color: #855348 !important;
+.perfil-container {
+  background-color: #F6F1EC;
+  min-height: 100vh;
 }
 
-.btn-primary:hover {
-    background-color: #6a423a !important; 
-    border-color: #6a423a !important;
+.title-primary {
+  color: #855348;
 }
 
-h2 {
-    color: #855348;
+.btn-primary-custom {
+  background-color: #855348 !important;
+  border-color: #855348 !important;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-primary-custom:hover {
+  background-color: #6a423a !important; 
+  border-color: #6a423a !important;
+  color: white;
+}
+
+.form-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
