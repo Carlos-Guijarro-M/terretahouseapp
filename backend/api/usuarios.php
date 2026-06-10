@@ -27,7 +27,7 @@ if ($method === 'GET') {
     if (isset($_GET['user_id'])) {
         $user_id = $_GET['user_id'];
         $stmt = $conn->prepare("
-            SELECT r.id, r.titulo, DATE_FORMAT(r.fecha, '%d/%m/%Y') as fecha, a.provincia, a.imagen_url,
+            SELECT r.id, a.titulo, DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha, a.provincia, a.imagen_url,
             a.fecha_actividad, a.hora_inicio
             FROM reserva r
             JOIN actividad a ON r.actividad_id = a.id
@@ -63,8 +63,12 @@ if ($method === 'POST') {
         exit;
     }
 
-    $stmt = $conn->prepare("UPDATE user SET baneado = ? WHERE id = ?");
-    $stmt->bind_param("ii", $baneado, $id);
+    if ($baneado == 1) {
+        $stmt = $conn->prepare("UPDATE user SET baneado = 1, api_token = NULL, token_expira = NULL WHERE id = ?");
+    } else {
+        $stmt = $conn->prepare("UPDATE user SET baneado = 0 WHERE id = ?");
+    }
+    $stmt->bind_param("i", $id);
 
     header("Content-Type: application/json");
     if ($stmt->execute()) {

@@ -2,6 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
@@ -30,15 +31,19 @@ if (empty($email) || empty($password) || empty($nombre) || empty($apellidos)) {
     exit;
 }
 
-$baneo = $conn->prepare("SELECT baneado FROM user WHERE email = ?");
-$baneo->bind_param("s", $email);
-$baneo->execute();
-$userBaneo = $baneo->get_result()->fetch_assoc();
+$checkStmt = $conn->prepare("SELECT id, baneado FROM user WHERE email = ?");
+$checkStmt->bind_param("s", $email);
+$checkStmt->execute();
+$resultado = $checkStmt->get_result()->fetch_assoc();
 
-if ($userBaneo && $userBaneo['baneado'] == 1) {
-    http_response_code(403);
-    header('Content-Type: application/json');
-    echo json_encode(['message' => 'Este correo electrónico está baneado, registrese con otro correo.']);
+if ($resultado) {
+    if ($resultado['baneado'] == 1) {
+        http_response_code(403);
+        echo json_encode(['message' => 'Este correo electrónico está baneado.']);
+    } else {
+        http_response_code(400);
+        echo json_encode(['message' => 'Este email ya está registrado.']);
+    }
     exit;
 }
 
@@ -73,7 +78,7 @@ if ($stmt->execute()) {
         echo json_encode(['message' => 'Usuario creado, pero hubo un error asignando el rol']);
     }
 } else {
-    http_response_code(400);
+    http_response_code(500);
     echo json_encode(['message' => 'Error al registrar el usuario en la base de datos']);
 }
 ?>

@@ -20,7 +20,7 @@ if ($method === 'GET') {
         $actividad_id = $_GET['actividad_id'];
         $stmt = $conn->prepare("
             SELECT u.id, u.nombre, u.apellidos, u.email, r.id as reserva_id,
-                   DATE_FORMAT(r.fecha, '%d/%m/%Y') as fecha
+                   DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha
             FROM reserva r
             JOIN user u ON r.user_id = u.id
             WHERE r.actividad_id = ?
@@ -117,7 +117,7 @@ if ($method === 'PUT') {
     if ($imagenNombre) borrarImagen(basename($act['imagen_url'] ?? ''));
 
     $stmt = $conn->prepare("UPDATE actividad SET titulo = ?, descripcion = ?, fecha_actividad = ?, hora_inicio = ?, hora_fin = ?, provincia = ?, imagen_url = ?, plazas_totales = ?, mapa_iframe = ? WHERE id = ?");
-    $stmt->bind_param("sssssssiis", $titulo, $desc, $fecha, $h_ini, $h_fin, $prov, $imagen_url, $plazas, $mapa, $id);
+    $stmt->bind_param("sssssssisi", $titulo, $desc, $fecha, $h_ini, $h_fin, $prov, $imagen_url, $plazas, $mapa, $id);
 
     header("Content-Type: application/json");
     echo json_encode(['message' => $stmt->execute() ? 'Actividad actualizada' : 'Error: ' . $stmt->error]);
