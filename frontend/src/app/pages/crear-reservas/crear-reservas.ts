@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef, ViewChild, ElementRef } f
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Reserva } from '../../services/reserva';
+import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 import { SafeHtmlPipe } from '../../pipes/safe-html-pipe';
 import { Pagination } from '../../components/pagination/pagination';
@@ -54,8 +55,19 @@ export class CrearReservas implements OnInit {
   private reservaService = inject(Reserva);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
+  private auth = inject(Auth);
 
   ngOnInit() {
+
+    if (!this.auth.getUser()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    if (!this.auth.isAdmin()) {
+      this.router.navigate(['/']);
+      return;
+    }
+    
     const state = history.state as { mensaje?: string };
     if (state?.mensaje) {
       this.mensajeConfirmacion = state.mensaje;

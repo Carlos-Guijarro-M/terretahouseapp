@@ -8,7 +8,6 @@ import { BehaviorSubject } from 'rxjs';
 export class Auth {
 
   private url = 'http://localhost:8000/api';
-  // Usamos BehaviorSubject para mantener el estado del usuario actual y permitir que otros componentes se suscriban a los cambios
   private currentUser$ = new BehaviorSubject<any>(this.loadUserFromStorage());
 
   constructor(private http: HttpClient) {}
@@ -36,6 +35,16 @@ export class Auth {
 
   getUserObservable() {
     return this.currentUser$.asObservable();
+  }
+
+  esRol(rolRequerido: string): boolean {
+    const user = this.getUser();
+    if (!user || !Array.isArray(user.roles)) return false;
+    return user.roles.map((r: string) => r.toLowerCase()).includes(rolRequerido.toLowerCase());
+  }
+
+  isAdmin(): boolean {
+    return this.esRol('ROLE_ADMIN');
   }
 
   logout() {

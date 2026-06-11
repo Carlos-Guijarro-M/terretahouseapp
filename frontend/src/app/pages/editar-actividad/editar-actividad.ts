@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Reserva } from '../../services/reserva';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-editar-actividad',
@@ -16,6 +17,7 @@ export class EditarActividad implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  private auth = inject(Auth)
 
   actividad: any = {
     id: null,
@@ -33,6 +35,17 @@ export class EditarActividad implements OnInit {
   imagenSeleccionada: File | null = null;
 
   ngOnInit() {
+
+    if (!this.auth.getUser()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (!this.auth.isAdmin()) {
+      this.router.navigate(['/']);
+      return;
+    }
+    
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.reservaService.getActividades().subscribe({

@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Pagination } from '../../components/pagination/pagination';
+import { Router } from '@angular/router';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-gestion-usuarios',
   standalone: true,
   imports: [CommonModule, FormsModule, Pagination],
   templateUrl: './gestion-usuarios.html',
-  styleUrl: './gestion-usuarios.css',
+  styleUrl: './gestion-usuarios.css'
 })
 export class GestionUsuarios implements OnInit {
   todosLosUsuarios: any[] = [];
@@ -35,8 +37,20 @@ export class GestionUsuarios implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private apiUrl = 'http://localhost:8000/api/usuarios.php';
+  private router = inject(Router);
+  private auth = inject(Auth);
 
   ngOnInit() {
+
+    if (!this.auth.getUser()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (!this.auth.isAdmin()) {
+      this.router.navigate(['/']);
+      return;
+    }
     this.cargarUsuarios();
   }
 

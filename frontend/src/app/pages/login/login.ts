@@ -42,10 +42,10 @@ export class Login {
     this.auth.login(this.formData).subscribe({
       next: (res: any) => {
         this.auth.setUser(res);
-        if(res.roles?.includes('ROLE_ADMIN')) {
+        if (this.auth.isAdmin()) {
           this.router.navigate(['/crear-reservas']);
         } else {
-        this.router.navigate(['/']);
+          this.router.navigate(['/']);
         }
       },
       error: (err) => {

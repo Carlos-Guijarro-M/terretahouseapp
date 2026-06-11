@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SafeHtmlPipe } from '../../pipes/safe-html-pipe';
 import { Pagination } from '../../components/pagination/pagination';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -38,6 +39,7 @@ export class Home implements OnInit {
     private reservaService: Reserva,
     private auth: Auth,
     private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   get actividadesDisponibles() {
@@ -84,6 +86,12 @@ export class Home implements OnInit {
   }
 
   ngOnInit() {
+
+    if (this.auth.isAdmin()) {
+      this.router.navigate(['/crear-reservas']);
+      return;
+    }
+
     const usuario = this.auth.getUser();
     if (usuario) {
       this.userLogeado = true;
