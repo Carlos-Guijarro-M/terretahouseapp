@@ -13,16 +13,12 @@ require_once 'auth_check.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    $stmt = $conn->prepare("
-        SELECT r.id, r.user_id, r.actividad_id,
-               DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha,
-               a.titulo, a.provincia, a.imagen_url, a.plazas_totales, 
-               a.hora_inicio, a.descripcion,
-               (SELECT COUNT(*) FROM reserva WHERE actividad_id = a.id) as plazas_ocupadas
+    $stmt = $conn->prepare("SELECT r.id, r.user_id, r.actividad_id, DATE_FORMAT(r.fecha_reserva, '%d/%m/%Y') as fecha, a.titulo, a.provincia, a.imagen_url, a.plazas_totales, a.hora_inicio, a.descripcion,
+            (SELECT COUNT(*) FROM reserva WHERE actividad_id = a.id) as plazas_ocupadas
         FROM reserva r
         JOIN actividad a ON r.actividad_id = a.id
-        WHERE r.user_id = ?
-    ");
+        WHERE r.user_id = ?");
+        
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);

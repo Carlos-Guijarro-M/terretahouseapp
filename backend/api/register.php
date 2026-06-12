@@ -16,6 +16,7 @@ $recaptchaToken = $_POST['recaptcha_token'] ?? '';
 
 $secret = '6LcEpxMtAAAAAJbq5T6_waCOTsrXFYikAQLZUdV6'; 
 $url = "https://www.google.com/recaptcha/api/siteverify?secret={$secret}&response={$recaptchaToken}";
+
 $verify = file_get_contents($url);
 $captchaResponse = json_decode($verify);
 
@@ -66,6 +67,7 @@ $stmt->bind_param("sssss", $email, $nombre, $apellidos, $hashPassword, $fotoRuta
 if ($stmt->execute()) {
     $userId = $conn->insert_id;
 
+    //Asignar el rol ( ROLE_ADMIN = id 1, ROLE_USER = id 2)
     $rolId = ($email === 'admin@gmail.com') ? 1 : 2;
     
     $stmtRol = $conn->prepare("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)");

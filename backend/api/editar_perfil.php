@@ -2,6 +2,8 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-Type: application/json");
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
@@ -13,12 +15,10 @@ $email = $_POST['email'] ?? '';
 $passwordActual = $_POST['password_actual'] ?? '';
 $passwordNueva = $_POST['password_nueva'] ?? '';
 
-header("Content-Type: application/json");
-
-$pswd_correct = $conn->prepare("SELECT password, foto FROM user WHERE id = ?");
-$pswd_correct->bind_param("i", $id);
-$pswd_correct->execute();
-$user_db = $pswd_correct->get_result()->fetch_assoc();
+$stmt = $conn->prepare("SELECT password, foto FROM user WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$user_db = $stmt->get_result()->fetch_assoc();
 
 if (!$user_db || !password_verify($passwordActual, $user_db['password'])) {
     echo json_encode(["status" => "error", "message" => "La contraseña actual no es correcta"]);
@@ -33,53 +33,46 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         mkdir($carpeta, 0755, true);
     }
 
-    if (!empty($user_db['foto'])) {
-        $fotoExistente = $carpeta . $user_db['foto'];
-        if (file_exists($fotoExistente)) {
-            unlink($fotoExistente);
-        }
+    if ($user_db['foto'] && file_exists($carpeta . $user_db['foto'])) {
+        unlink($carpeta . $user_db['foto']);
     }
 
     $nombreArchivo = time() . '_' . preg_replace('/\s+/', '', basename($_FILES['foto']['name']));
-    $destino = $carpeta . $nombreArchivo;
+    $destino = $carpeta . $nombreArchivo; 
 
     if (move_uploaded_file($_FILES['foto']['tmp_name'], $destino)) {
         $fotoRuta = $nombreArchivo;
     }
 }
 
-try {
-    if (!empty($passwordNueva)) {
-        if (password_verify($passwordNueva, $user_db['password'])) {
-            echo json_encode(["status" => "error", "message" => "La nueva contraseña no puede ser igual a la actual"]);
-            exit();
-        }
+//UPDATE del perfil
+$campos = ["nombre = ?", "email = ?"];
+$valores = [$nombre, $email];
+$tipos = "ss";
 
-        $hash = password_hash($passwordNueva, PASSWORD_DEFAULT);
+if (!empty($passwordNueva)) {
+    $campos[] = "password = ?";
+    $valores[] = password_hash($passwordNueva, PASSWORD_DEFAULT);
+    $tipos .= "s";
+}
 
-        $sql = $fotoRuta ? "UPDATE user SET nombre=?, email=?, password=?, foto=? WHERE id=?"
-                         : "UPDATE user SET nombre=?, email=?, password=? WHERE id=?";
-        $stmt = $conn->prepare($sql);
-        $fotoRuta ? $stmt->bind_param("ssssi", $nombre, $email, $hash, $fotoRuta, $id)
-                  : $stmt->bind_param("sssi", $nombre, $email, $hash, $id);
-    } else {
-        $sql = $fotoRuta ? "UPDATE user SET nombre=?, email=?, foto=? WHERE id=?"
-                         : "UPDATE user SET nombre=?, email=? WHERE id=?";
-        $stmt = $conn->prepare($sql);
-        $fotoRuta ? $stmt->bind_param("sssi", $nombre, $email, $fotoRuta, $id)
-                  : $stmt->bind_param("ssi", $nombre, $email, $id);
-    }
+if ($fotoRuta) {
+    $campos[] = "foto = ?";
+    $valores[] = $fotoRuta;
+    $tipos .= "s";
+}
 
-    if ($stmt->execute()) {
-        $respuesta = ["status" => "success", "message" => "Perfil actualizado"];
-        if ($fotoRuta) {
-            $respuesta["foto"] = $fotoRuta;
-        }
-        echo json_encode($respuesta);
-    } else {
-        throw new Exception("Error al ejecutar la actualización en la BD");
-    }
-} catch (Exception $e) {
-    echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+$valores[] = $id;
+$tipos .= "i";
+
+//Implode para concatenar los campos del array en una cadena separada por comas para construir la consulta SQL.
+$sql = "UPDATE user SET " . implode(", ", $campos) . " WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param($tipos, ...$valores);
+
+if ($stmt->execute()) {
+    echo json_encode(["status" => "success", "message" => "Perfil actualizado", "foto" => $fotoRuta]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Error al actualizar"]);
 }
 ?>

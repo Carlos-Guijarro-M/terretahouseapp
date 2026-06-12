@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
     user_id INT NOT NULL,
     role_id INT NOT NULL,
     PRIMARY KEY (user_id, role_id),
+    --Si elimino el registro padre, se eliminan los hijos automáticamente (evita datos huérfanos).
     CONSTRAINT fk_user_role FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );

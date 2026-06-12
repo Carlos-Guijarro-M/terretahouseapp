@@ -4,14 +4,13 @@ header("Content-Type: application/json");
 
 require_once '../includes/db.php';
 
-$query = "SELECT id, email, roles FROM user";
-$result = $conn->query($query);
+//traer el nombre del rol
+$query = "SELECT u.id, u.email, r.nombre_rol FROM user u LEFT JOIN user_roles ur ON u.id = ur.user_id LEFT JOIN roles r ON ur.role_id = r.id";
 
+$result = $conn->query($query);
 $users = [];
 
 while ($row = $result->fetch_assoc()) {
-    $row['roles'] = json_decode($row['roles'], true);
-    
     $users[] = $row;
 }
 
