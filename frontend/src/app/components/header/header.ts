@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
-export class Header implements OnInit {
+export class Header {
   menuAbierto: boolean = false;
   isMenuCollapsed: boolean = false;
   usuarioActual: any = null;
@@ -26,20 +26,38 @@ export class Header implements OnInit {
   comprobarLogueado(): boolean {
     return this.usuarioActual !== null;
   }
-
+  
   obtenerFoto(): string {
-    if (this.usuarioActual?.foto) {
-      return `http://localhost:8000/uploads/perfiles/${this.usuarioActual.foto}`;
+    let ruta: string;
+    
+    if (this.usuarioActual != null && this.usuarioActual.foto != null) {
+        ruta = 'http://localhost:8000/uploads/perfiles/' + this.usuarioActual.foto;
+    } else {
+        const nombre = (this.usuarioActual != null) ? this.usuarioActual.nombre : 'U';
+        ruta = 'https://ui-avatars.com/api/?name=' + nombre + '&background=A0685D&color=fff&size=30';
     }
-    return `https://ui-avatars.com/api/?name=${this.usuarioActual?.nombre || 'U'}&background=A0685D&color=fff&size=30`;
+    
+    return ruta;
   }
 
   comprobarAdmin(): boolean {
-    return this.usuarioActual?.roles?.includes('ROLE_ADMIN') || false;
+    if (this.usuarioActual != null && this.usuarioActual.roles != null) {
+        if (this.usuarioActual.roles.includes('ROLE_ADMIN')) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
   }
 
   conmutarMenu() {
-    this.menuAbierto = !this.menuAbierto;
+    if (this.menuAbierto == true) {
+        this.menuAbierto = false;
+    } else {
+        this.menuAbierto = true;
+    }
   }
 
   cerrarMenu() {

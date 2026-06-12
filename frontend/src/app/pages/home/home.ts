@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin, of } from 'rxjs';
 import { Reserva } from '../../services/reserva';
@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnInit {
+export class Home {
   todasLasActividades: any[] = [];
   misReservas: any[] = [];
   provinciaFiltro: string = 'Todas';
@@ -34,29 +34,28 @@ export class Home implements OnInit {
   paginaActualActividades: number = 1;
   paginaActualReservas: number = 1;
 
-  constructor(
-    public app: App,
-    private reservaService: Reserva,
-    private auth: Auth,
-    private cdr: ChangeDetectorRef,
-    private router: Router
-  ) {}
+  constructor(public app: App, private reservaService: Reserva, private auth: Auth, private cdr: ChangeDetectorRef, private router: Router) {}
 
   get actividadesDisponibles() {
-    const filtradas = this.provinciaFiltro === 'Todas'
-        ? this.todasLasActividades
-        : this.todasLasActividades.filter((a) => a.provincia === this.provinciaFiltro);
+    let filtradas = this.todasLasActividades;
+    
+    if (this.provinciaFiltro !== 'Todas') {
+      filtradas = filtradas.filter((a) => a.provincia === this.provinciaFiltro);
+    }
 
     return filtradas
       .filter((a) => !this.yaReservada(a.id))
-      .filter((a) => a.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase()));
+      .filter((a) => a.titulo.toLowerCase().indexOf(this.textoBusqueda.toLowerCase()) !== -1);
   }
 
   get misReservasFiltradas() {
-    const filtradas = this.provinciaFiltro === 'Todas'
-        ? this.misReservas
-        : this.misReservas.filter(r => r.provincia === this.provinciaFiltro);
-    return filtradas.filter((r) => r.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase()));
+    let filtradas = this.misReservas;
+    
+    if (this.provinciaFiltro !== 'Todas') {
+      filtradas = filtradas.filter((r) => r.provincia === this.provinciaFiltro);
+    }
+    
+    return filtradas.filter((r) => r.titulo.toLowerCase().indexOf(this.textoBusqueda.toLowerCase()) !== -1);
   }
 
   get actividadesPaginadas() {
@@ -108,27 +107,27 @@ export class Home implements OnInit {
       actividades: this.reservaService.getActividades(),
       reservas: this.userLogeado ? this.reservaService.getReservas() : of([]),
     }).subscribe({
-      next: ({ actividades, reservas }) => {
-        this.todasLasActividades = actividades as any[];
+      next: (data: any) => {
+        this.todasLasActividades = data.actividades;
 
         if (this.userLogeado) {
-          this.misReservas = (reservas as any[]).map((res: any) => {
-            const actividadId = res.actividad_id ?? res.actividadId;
+          this.misReservas = (data.reservas as any[]).map((res: any) => {
+            const actividadId = res.actividad_id || res.actividadId;
             const act = this.todasLasActividades.find((a) => Number(a.id) === Number(actividadId));
 
             return {
-              ...res,
+              id: res.id,
               actividadId: actividadId,
-              titulo: res.titulo || act?.titulo || 'Sin título',
-              fecha: res.fecha || act?.fecha || '',
-              imagen_url: act?.imagen_url,
-              provincia: act?.provincia || 'Sin provincia',
-              plazas_ocupadas: res.plazas_ocupadas || act?.plazas_ocupadas || 0,
-              plazas_totales: res.plazas_totales || act?.plazas_totales || 0,
-              descripcion: act?.descripcion || '',
-              hora_inicio: act?.hora_inicio || '',
-              hora_fin: act?.hora_fin || '',
-              mapa_iframe: act?.mapa_iframe || ''
+              titulo: res.titulo || (act ? act.titulo : 'Sin título'),
+              fecha: res.fecha || (act ? act.fecha : ''),
+              imagen_url: act ? act.imagen_url : '',
+              provincia: act ? act.provincia : 'Sin provincia',
+              plazas_ocupadas: res.plazas_ocupadas || (act ? act.plazas_ocupadas : 0),
+              plazas_totales: res.plazas_totales || (act ? act.plazas_totales : 0),
+              descripcion: act ? act.descripcion : '',
+              hora_inicio: act ? act.hora_inicio : '',
+              hora_fin: act ? act.hora_fin : '',
+              mapa_iframe: act ? act.mapa_iframe : ''
             };
           });
         }

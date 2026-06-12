@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 declare var bootstrap: any;
 
@@ -9,14 +9,15 @@ declare var bootstrap: any;
   templateUrl: './hero-carousel.html',
   styleUrl: './hero-carousel.css',
 })
-export class HeroCarousel implements AfterViewInit {
 
-  ngAfterViewInit(): void {
+export class HeroCarousel {
+
+  ngOnInit(): void {
     setTimeout(() => {
-      const element = document.getElementById('heroCarousel');
-      if (element) {
-        new bootstrap.Carousel(element);
+      const carouselElement = document.getElementById('heroCarousel');
+      if (carouselElement) {
+        new bootstrap.Carousel(carouselElement);
       }
-    }, 100);
+    }, 500); 
   }
 }

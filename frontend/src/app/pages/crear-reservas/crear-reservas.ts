@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Reserva } from '../../services/reserva';
@@ -14,9 +14,11 @@ import { Pagination } from '../../components/pagination/pagination';
   templateUrl: './crear-reservas.html',
   styleUrl: './crear-reservas.css',
 })
-export class CrearReservas implements OnInit {
+export class CrearReservas {
 
   @ViewChild('fileInput') fileInput!: ElementRef;
+
+  constructor(private reservaService: Reserva, private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
   todasLasActividades: any[] = [];
   actividades: any[] = [];
@@ -51,11 +53,6 @@ export class CrearReservas implements OnInit {
     plazas_totales: '',
     mapa_iframe: ''
   };
-
-  private reservaService = inject(Reserva);
-  private cdr = inject(ChangeDetectorRef);
-  private router = inject(Router);
-  private auth = inject(Auth);
 
   ngOnInit() {
 
@@ -103,7 +100,7 @@ export class CrearReservas implements OnInit {
   }
 
   aplicarFiltros() {
-    let resultado = [...this.todasLasActividades];
+    let resultado = this.todasLasActividades.slice();
     if (this.provinciaFiltro !== 'Todas') {
       resultado = resultado.filter(a => a.provincia === this.provinciaFiltro);
     }
@@ -228,17 +225,19 @@ export class CrearReservas implements OnInit {
     return;
   }
 
-  this.actividades = [...this.actividades].sort((a, b) => {
+  let ordenado = this.actividades.slice();
+
+  ordenado.sort((a, b) => {
     const valA = (a[campo] || '').toString().toLowerCase();
     const valB = (b[campo] || '').toString().toLowerCase();
     
     if (this.ordenAsc === 'asc') {
-      return valA.localeCompare(valB);
+      return valA < valB ? -1 : (valA > valB ? 1 : 0);
     } else {
-      return valB.localeCompare(valA);
+      return valB < valA ? -1 : (valB > valA ? 1 : 0);
     }
   });
-
+  this.actividades = ordenado;
   this.paginaActual = 1;
   this.cdr.detectChanges();
 }

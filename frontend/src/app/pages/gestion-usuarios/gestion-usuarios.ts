@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -13,7 +13,8 @@ import { Auth } from '../../services/auth';
   templateUrl: './gestion-usuarios.html',
   styleUrl: './gestion-usuarios.css'
 })
-export class GestionUsuarios implements OnInit {
+export class GestionUsuarios {
+
   todosLosUsuarios: any[] = [];
   usuarios: any[] = [];
   textoBusqueda: string = '';
@@ -25,6 +26,10 @@ export class GestionUsuarios implements OnInit {
   elementosPorPagina: number = 2;
   paginaActual: number = 1;
 
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router, private auth: Auth) {}
+  private apiUrl = 'http://localhost:8000/api/usuarios.php';
+
+
   get usuariosPaginados() {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
     return this.usuarios.slice(inicio, inicio + this.elementosPorPagina);
@@ -33,12 +38,6 @@ export class GestionUsuarios implements OnInit {
   get totalPaginas() {
     return Math.ceil(this.usuarios.length / this.elementosPorPagina);
   }
-
-  private http = inject(HttpClient);
-  private cdr = inject(ChangeDetectorRef);
-  private apiUrl = 'http://localhost:8000/api/usuarios.php';
-  private router = inject(Router);
-  private auth = inject(Auth);
 
   ngOnInit() {
 
@@ -77,7 +76,7 @@ export class GestionUsuarios implements OnInit {
   }
 
   aplicarFiltros() {
-    let resultado = [...this.todosLosUsuarios];
+    let resultado = this.todosLosUsuarios.slice();
 
     if (this.filtroEstado === 'Activo') {
       resultado = resultado.filter(u => u.baneado == 0);
@@ -87,7 +86,7 @@ export class GestionUsuarios implements OnInit {
 
     if (this.textoBusqueda.trim() !== '') {
       resultado = resultado.filter(u =>
-        u.nombre.toLowerCase().includes(this.textoBusqueda.toLowerCase())
+        u.nombre.toLowerCase().indexOf(this.textoBusqueda.toLowerCase()) !== -1 
       );
     }
 

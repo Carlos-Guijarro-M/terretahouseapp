@@ -8,6 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 export class Auth {
 
   private url = 'http://localhost:8000/api';
+
+  //uso el behavior para que el estado del usuario sea reactivo.
   private currentUser$ = new BehaviorSubject<any>(this.loadUserFromStorage());
 
   constructor(private http: HttpClient) {}
@@ -36,7 +38,8 @@ export class Auth {
   getUserObservable() {
     return this.currentUser$.asObservable();
   }
-
+  
+  //comprobar si el usuario tiene un rol específico
   esRol(rolRequerido: string): boolean {
     const user = this.getUser();
     if (!user || !Array.isArray(user.roles)) return false;
@@ -47,6 +50,7 @@ export class Auth {
     return this.esRol('ROLE_ADMIN');
   }
 
+  //tancar sessio
   logout() {
     const user = this.getUser();
     const token = user ? user.api_token : null;
@@ -61,6 +65,7 @@ export class Auth {
     return this.http.post(`${this.url}/logout.php`, {}, { headers });
   }
 
+  //recuperar la sesion
   private loadUserFromStorage() {
     const data = localStorage.getItem('user');
     return data ? JSON.parse(data) : null;

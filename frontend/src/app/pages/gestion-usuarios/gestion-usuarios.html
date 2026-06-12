@@ -68,29 +68,42 @@
 </div>
 
 @if (usuarioSeleccionado) {
-  <div class="modal-overlay">
+  <div class="modal d-block" style="background: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
+        
         <div class="modal-header">
-          <h5 class="modal-title fw-bold">Reservas de {{ usuarioSeleccionado.nombre }} {{ usuarioSeleccionado.apellidos }}</h5>
+          <h5 class="modal-title fw-bold">
+            Reservas de {{ usuarioSeleccionado.nombre }} {{ usuarioSeleccionado.apellidos }}
+          </h5>
           <button type="button" class="btn-close" (click)="cerrarModal()"></button>
         </div>
+
         <div class="modal-body">
           @if (reservasUsuario.length === 0) {
-            <p class="text-center text-muted">Este usuario no tiene reservas.</p>
+            <p class="text-center text-muted py-4">Este usuario no tiene reservas registradas.</p>
           } @else {
             <div class="table-responsive">
               <table class="table table-hover align-middle">
                 <thead class="table-dark">
-                  <tr><th>Actividad</th><th>Provincia</th><th>Fecha</th><th>Acciones</th></tr>
+                  <tr>
+                    <th>Actividad</th>
+                    <th>Provincia</th>
+                    <th>Fecha</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
                 </thead>
                 <tbody>
                   @for (r of reservasUsuario; track r.id) {
                     <tr>
-                      <td>{{ r.titulo }}</td>
+                      <td><strong>{{ r.titulo }}</strong></td>
                       <td>{{ r.provincia }}</td>
                       <td>{{ r.fecha }}</td>
-                      <td><button class="btn btn-outline-danger btn-sm" (click)="eliminarReservaDeUsuario(r.id)">Eliminar</button></td>
+                      <td class="text-center">
+                        <button class="btn btn-outline-danger btn-sm" (click)="eliminarReservaDeUsuario(r.id)">
+                          Eliminar
+                        </button>
+                      </td>
                     </tr>
                   }
                 </tbody>
@@ -98,7 +111,10 @@
             </div>
           }
         </div>
-        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" (click)="cerrarModal()">Cerrar</button></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+        </div>
+
       </div>
     </div>
   </div>

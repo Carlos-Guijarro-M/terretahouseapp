@@ -1,30 +1,24 @@
 <div class="contacto">
-  <header class="hero-contacto d-flex align-items-center justify-content-center text-white">
-    <div class="text-center">
-      <h1 class="display-3 fw-bold">Contacto</h1>
-      <p class="lead">¿Tienes dudas? Escríbenos</p>
-    </div>
-  </header>
-
   <section class="container py-5">
     <div class="row justify-content-center">
       <div class="col-12 col-md-8 col-lg-6">
         <h2 class="text-center mb-4">Envíanos un mensaje</h2>
 
-        <form class="needs-validation">
+        <form (ngSubmit)="enviarMensaje()">
+          
           <div class="mb-3">
             <label for="nombre" class="form-label fw-bold">Nombre</label>
-            <input type="text" id="nombre" class="form-control" placeholder="Tu nombre" required>
+            <input type="text" id="nombre" name="nombre" class="form-control" [(ngModel)]="texto.nombre" placeholder="Tu nombre" required>
           </div>
 
           <div class="mb-3">
             <label for="correo" class="form-label fw-bold">Email</label>
-            <input type="email" id="correo" class="form-control" placeholder="Tu email" required>
+            <input type="email" id="correo" name="correo" class="form-control" [(ngModel)]="texto.correo" placeholder="Tu email" required>
           </div>
 
           <div class="mb-3">
             <label for="mensaje" class="form-label fw-bold">Mensaje</label>
-            <textarea id="mensaje" class="form-control" rows="5" placeholder="Escribe tu mensaje" required></textarea>
+            <textarea id="mensaje" name="mensaje" class="form-control" rows="5" [(ngModel)]="texto.mensaje" placeholder="Escribe tu mensaje" required></textarea>
           </div>
 
           <div class="d-grid">
@@ -33,6 +27,7 @@
             </button>
           </div>
         </form>
+
       </div>
     </div>
   </section>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin, of } from 'rxjs';
 import { Reserva } from '../../services/reserva';
@@ -15,7 +15,7 @@ import { Pagination } from '../../components/pagination/pagination';
   templateUrl: './mis-reservas.html',
   styleUrl: '/mis-reservas.css'
 })
-export class MisReservas implements OnInit {
+export class MisReservas {
   todasLasReservas: any[] = [];
   reservas: any[] = [];
   tituloPagina: string = 'Mis Reservas';
@@ -28,6 +28,9 @@ export class MisReservas implements OnInit {
   elementosPorPagina: number = 3;
   paginaActual: number = 1;
 
+  
+  constructor(private reservaService: Reserva, public auth: Auth, private cdr: ChangeDetectorRef, public app: App) {}
+
   get reservasPaginadas() {
     const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
     return this.reservas.slice(inicio, inicio + this.elementosPorPagina);
@@ -37,16 +40,10 @@ export class MisReservas implements OnInit {
     return Math.ceil(this.reservas.length / this.elementosPorPagina);
   }
 
-  constructor(
-    private reservaService: Reserva,
-    public auth: Auth,
-    private cdr: ChangeDetectorRef,
-    public app: App,
-  ) {}
 
   ngOnInit() {
     const usuario = this.auth.getUser();
-    if (usuario && usuario.roles?.includes('ROLE_ADMIN')) {
+    if (usuario && usuario.roles && usuario.roles.indexOf('ROLE_ADMIN') !== -1) {
       this.isAdmin = true;
       this.tituloPagina = 'Gestión de Actividades';
     }
@@ -57,32 +54,39 @@ export class MisReservas implements OnInit {
     forkJoin({
       actividades: this.reservaService.getActividades(),
       misReservas: !this.isAdmin ? this.reservaService.getReservas() : of([]),
-    }).subscribe(({ actividades, misReservas }) => {
-      if (this.isAdmin) {
-        this.todasLasReservas = actividades as any[];
-      } else {
-        this.todasLasReservas = (misReservas as any[]).map((res) => {
-          const actividadId = res.actividad_id ?? res.actividadId;
-          const act = (actividades as any[]).find((a) => Number(a.id) === Number(actividadId));
+    }).subscribe({
+      next: (data: any) => {
+        const actividades = data.actividades as any[];
+        
+        if (this.isAdmin) {
+          this.todasLasReservas = actividades;
+        } else {
+          const misReservas = data.misReservas as any[];
+          this.todasLasReservas = misReservas.map(function(res) {
+            const actividadId = res.actividad_id || res.actividadId;
+            const act = actividades.find(function(a) { 
+              return Number(a.id) === Number(actividadId); 
+            });
 
-          return {
-            ...res,
-            actividadId: actividadId,
-            titulo: act?.titulo || res.titulo || 'Sin título',
-            descripcion: act?.descripcion || '',
-            provincia: act?.provincia || res.provincia || 'Sin provincia',
-            fecha: res.fecha || act?.fecha || '',
-            hora_inicio: act?.hora_inicio || '',
-            hora_fin: act?.hora_fin || '',
-            plazas_ocupadas: res.plazas_ocupadas || act?.plazas_ocupadas || 0,
-            plazas_totales: act?.plazas_totales || 0,
-            mapa_iframe: act?.mapa_iframe || '',
-            imagen_url: act?.imagen_url || res.imagen_url,
-          };
-        });
+            return {
+              id: res.id,
+              actividadId: actividadId,
+              titulo: (act ? act.titulo : null) || res.titulo || 'Sin título',
+              descripcion: act ? act.descripcion : '',
+              provincia: (act ? act.provincia : null) || res.provincia || 'Sin provincia',
+              fecha: res.fecha || (act ? act.fecha : ''),
+              hora_inicio: act ? act.hora_inicio : '',
+              hora_fin: act ? act.hora_fin : '',
+              plazas_ocupadas: res.plazas_ocupadas || (act ? act.plazas_ocupadas : 0),
+              plazas_totales: act ? act.plazas_totales : 0,
+              mapa_iframe: act ? act.mapa_iframe : '',
+              imagen_url: act ? act.imagen_url : res.imagen_url
+            };
+          });
+        }
+        this.aplicarFiltros();
+        this.cdr.detectChanges();
       }
-      this.aplicarFiltros();
-      this.cdr.detectChanges();
     });
   }
 
@@ -93,22 +97,22 @@ export class MisReservas implements OnInit {
   }
 
   aplicarFiltros() {
-    let resultado = [...this.todasLasReservas];
+  let resultado = this.todasLasReservas.slice();
 
-    if (this.provinciaFiltro !== 'Todas') {
-      resultado = resultado.filter((r) => r.provincia === this.provinciaFiltro);
-    }
-
-    if (this.textoBusqueda.trim() !== '') {
-      resultado = resultado.filter((r) =>
-        r.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase()),
-      );
-    }
-
-    this.reservas = resultado;
-    this.paginaActual = 1;
-    this.cdr.detectChanges();
+  if (this.provinciaFiltro !== 'Todas') {
+    resultado = resultado.filter((r) => r.provincia === this.provinciaFiltro);
   }
+
+  if (this.textoBusqueda.trim() !== '') {
+    resultado = resultado.filter((r) =>
+      r.titulo.toLowerCase().indexOf(this.textoBusqueda.toLowerCase()) !== -1
+    );
+  }
+
+  this.reservas = resultado;
+  this.paginaActual = 1;
+  this.cdr.detectChanges();
+}
 
   verDetalleActividad(actividad: any) {
     this.actividadSeleccionada = actividad;

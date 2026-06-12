@@ -32,8 +32,9 @@ export class Register {
   }
 
   onFileSelected(event: any) {
-    if (event.target.files.length > 0) {
-      this.archivoSeleccionado = event.target.files[0];
+    const file = event.target.files[0];
+    if (file) {
+      this.archivoSeleccionado = file;
     }
   }
 
@@ -67,7 +68,7 @@ export class Register {
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Error desconocido';
+        this.error = (err.error && err.error.message) ? err.error.message : 'Error en el registro.';        
         this.cdr.detectChanges(); 
       }
     });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../services/auth';
@@ -10,7 +10,7 @@ import { Auth } from '../../services/auth';
   templateUrl: './editar-perfil.html',
   styleUrl: './editar-perfil.css'
 })
-export class EditarPerfil implements OnInit {
+export class EditarPerfil {
   usuario = { id: '', nombre: '', email: '', password_actual: '', password_nueva: '', password_confirmar: '' };
   archivoSeleccionado: File | null = null;
 
@@ -62,13 +62,13 @@ export class EditarPerfil implements OnInit {
       next: (res: any) => {
         if (res.status === 'success') {
           const userActual = this.auth.getUser();
-          const userActualizado = {
-            ...userActual,
-            nombre: this.usuario.nombre,
-            email: this.usuario.email,
-            foto: res.foto ? res.foto : userActual.foto
-          };
-          this.auth.setUser(userActualizado);
+          
+          userActual.nombre = this.usuario.nombre;
+          userActual.email = this.usuario.email;
+          if (res.foto) {
+            userActual.foto = res.foto;
+          }
+          this.auth.setUser(userActual);
           alert('Perfil actualizado correctamente');
           window.location.reload();
         } else {

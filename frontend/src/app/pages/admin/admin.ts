@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component} from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../services/auth';
 
@@ -9,10 +9,9 @@ import { Auth } from '../../services/auth';
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
-export class Admin implements OnInit {
-  
-  private auth = inject(Auth);
-  private router = inject(Router);
+export class Admin{
+
+  constructor(private auth: Auth, private router: Router){}
 
   ngOnInit() {
     const usuario = this.auth.getUser();

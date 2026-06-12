@@ -11,6 +11,20 @@ export class Reserva {
 
   constructor(private http: HttpClient) { }
 
+  //peticiones JSON con Auth
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + this.getToken()
+    });
+  }
+
+  private getAuthHeadersSinContentType(): HttpHeaders {
+    return new HttpHeaders({
+      'Authorization': 'Bearer ' + this.getToken()
+    });
+  }
+
   getReservas() {
     return this.http.get(this.url, { headers: this.getAuthHeaders() });
   }
@@ -27,6 +41,7 @@ export class Reserva {
     return this.http.get(this.urlActividades, { headers: this.getAuthHeaders() });
   }
 
+  //uso FormData para poder subir archivos (tema - imagenes)
   crearActividad(data: FormData) {
     return this.http.post(this.urlActividades, data, { headers: this.getAuthHeadersSinContentType() });
   }
@@ -48,6 +63,7 @@ export class Reserva {
     return this.http.delete(`${this.urlActividades}?reserva_id=${reservaId}`, { headers: this.getAuthHeaders() });
   }
 
+  //extraer el token del localStorage para poder autenticar las peticiones
   private getToken(): string {
     const userStorage = localStorage.getItem('user');
     if (userStorage) {
@@ -57,16 +73,5 @@ export class Reserva {
     return '';
   }
 
-  private getAuthHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + this.getToken()
-    });
-  }
-
-  private getAuthHeadersSinContentType(): HttpHeaders {
-    return new HttpHeaders({
-      'Authorization': 'Bearer ' + this.getToken()
-    });
-  }
+  
 }

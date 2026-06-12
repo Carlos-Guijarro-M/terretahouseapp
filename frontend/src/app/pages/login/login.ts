@@ -12,11 +12,7 @@ import { RecaptchaModule } from 'ng-recaptcha';
   styleUrl: '/login.css'
 })
 export class Login {
-  formData = {
-    email: '',
-    password: '',
-    recaptcha_token: ''
-  };
+  formData = {email: '', password: '', recaptcha_token: ''};
   
   error: string = '';
 
@@ -29,13 +25,13 @@ export class Login {
   login() {
     this.error = '';
 
-    if (!this.formData.recaptcha_token) {
-      this.error = 'Por favor, completa el CAPTCHA.';
+    if (!this.formData.email || !this.formData.password) {
+      this.error = 'Por favor, rellena todos los campos';
       return;
     }
 
-    if (!this.formData.email || !this.formData.password) {
-      this.error = 'Por favor, rellena todos los campos';
+    if (!this.formData.recaptcha_token) {
+      this.error = 'Por favor, completa el CAPTCHA.';
       return;
     }
 
@@ -49,7 +45,7 @@ export class Login {
         }
       },
       error: (err) => {
-        this.error = err.error?.message || 'Email o contraseña incorrectos';
+        this.error = (err.error && err.error.message) ? err.error.message : 'Email o contraseña incorrectos';
         this.cdr.detectChanges();
       }
     });

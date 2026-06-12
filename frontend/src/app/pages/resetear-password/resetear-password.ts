@@ -17,6 +17,7 @@ export class ResetearPassword {
   passwordConfirmar: string = '';
   error: string = '';
   exito: string = '';
+  private readonly API_URL = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private router: Router) {}
 
@@ -34,7 +35,7 @@ export class ResetearPassword {
       return;
     }
 
-    this.http.post<any>('http://localhost:8000/api/resetear_password.php', {
+    this.http.post<any>(`${this.API_URL}/resetear_password.php`, {
       token: this.token,
       password: this.passwordNueva
     }).subscribe({
@@ -43,12 +44,12 @@ export class ResetearPassword {
           alert('Contraseña restablecida con exito. Se te redigira al login.');
           this.router.navigate(['/login']);
         } else {
-          this.error = res.message;
+          this.error = res.message || 'Error al restablecer la contraseña.';        
         }
         this.cdr.detectChanges();
       },
-      error: () => {
-        this.error = 'Error al conectar con el servidor.';
+      error: (err) => {
+        this.error = (err.error && err.error.message) ? err.error.message : 'Error al conectar con el servidor.';
         this.cdr.detectChanges();
       }
     });

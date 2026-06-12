@@ -9,8 +9,12 @@ import { CommonModule } from '@angular/common';
   styleUrl: './pagination.css',
 })
 export class Pagination {
+
+  //@Input me permite que el component padre nos pase todos los datos
   @Input() totalPaginas: number = 0;
   @Input() paginaActual: number = 1;
+
+  //En cambio @Output avisa al padre cuando el user hace click en el numero
   @Output() paginaCambiada = new EventEmitter<number>();
 
   get paginas() {
