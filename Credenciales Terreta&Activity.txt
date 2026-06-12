@@ -1,0 +1,7 @@
+ADMIN TERRETAHOUSE
+email: admin@gmail.com
+psw: admin
+
+CREDENCIALES PHPMYADMIN
+user: root
+psw: root
